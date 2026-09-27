@@ -1,0 +1,109 @@
+{% extends "base.html" %}
+
+{% block title %}Knowledge Graph - AdaptiveLearn AI{% endblock %}
+
+{% block content %}
+<div class="page-header" style="display:flex; justify-content:space-between; align-items:flex-end; flex-wrap:wrap; gap:16px;">
+  <div>
+    <h1 class="page-title">🕸️ Concept Knowledge Graph</h1>
+    <p class="page-subtitle">
+      Explore concept prerequisites and mastery gating. Dependent concepts unlock once prerequisites achieve ≥70% mastery.
+    </p>
+  </div>
+  <div>
+    <label style="font-size:12px; color:#94a3b8; font-weight:600; margin-right:8px;">Select Course:</label>
+    <select id="kg-course-select" class="demo-select" style="min-width: 220px;">
+      <option value="1">Grade 10 Mathematics</option>
+      <option value="2">Grade 10 Science</option>
+      <option value="3">Diploma Computer Science</option>
+      <option value="4">PUC Physics</option>
+    </select>
+  </div>
+</div>
+
+<div class="glass-card" style="padding: 28px; margin-bottom: 28px;">
+  <div id="full-kg-container" style="min-height: 520px;"></div>
+</div>
+
+<!-- Node Details Modal -->
+<div id="concept-modal" class="modal-overlay">
+  <div class="modal-card">
+    <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:12px;">
+      <div>
+        <span class="badge" id="modal-concept-status">Status</span>
+        <h2 id="modal-concept-title" style="font-size:22px; margin-top:6px;">Concept Title</h2>
+      </div>
+      <button class="btn btn-secondary btn-sm" onclick="document.getElementById('concept-modal').classList.remove('active')">✕</button>
+    </div>
+
+    <p id="modal-concept-desc" style="color:#cbd5e1; font-size:14px; margin-bottom:16px; line-height:1.6;"></p>
+
+    <div style="display:flex; gap:16px; margin-bottom:20px;">
+      <div class="stat-pill" style="flex:1;">
+        <span class="label">Demonstrated Mastery</span>
+        <span class="value" id="modal-concept-mastery" style="color:#10b981;">0%</span>
+      </div>
+      <div class="stat-pill" style="flex:1;">
+        <span class="label">Total Attempts</span>
+        <span class="value" id="modal-concept-attempts">0</span>
+      </div>
+    </div>
+
+    <div id="modal-unmet-prereqs-box" style="display:none; background:rgba(239, 68, 68, 0.12); border:1px solid rgba(239, 68, 68, 0.4); border-radius:10px; padding:12px; margin-bottom:20px;">
+      <strong style="color:#f87171; font-size:13px;">🔒 Prerequisite Lock Warning:</strong>
+      <div id="modal-unmet-list" style="font-size:12px; color:#fca5a5; margin-top:6px;"></div>
+    </div>
+
+    <div style="display:flex; gap:10px; justify-content:flex-end;">
+      <a id="modal-action-practice" href="#" class="btn btn-secondary btn-sm">Targeted Practice</a>
+      <a id="modal-action-gaps" href="#" class="btn btn-primary btn-sm">Deep Diagnosis & Recovery</a>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="/static/js/knowledge-graph.js"></script>
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const kg = new KnowledgeGraphVisualizer("full-kg-container");
+  const select = document.getElementById("kg-course-select");
+  
+  kg.load(select.value);
+
+  select.addEventListener("change", (e) => {
+    kg.load(e.target.value);
+  });
+
+  // Modal click handler
+  window.handleConceptNodeClick = (conceptId) => {
+    const node = kg.data.nodes.find(n => n.id === conceptId);
+    if (!node) return;
+
+    document.getElementById("modal-concept-title").textContent = `${node.code}: ${node.title}`;
+    document.getElementById("modal-concept-desc").textContent = node.description || "Detailed conceptual breakdown for this syllabus item.";
+    document.getElementById("modal-concept-mastery").textContent = `${Math.round(node.mastery_score)}%`;
+    document.getElementById("modal-concept-attempts").textContent = node.attempts || 0;
+
+    const statusBadge = document.getElementById("modal-concept-status");
+    statusBadge.textContent = node.status_label;
+    statusBadge.className = `badge ${node.status === 'MASTERED' ? 'badge-mastered' : (node.status === 'STRUGGLING' ? 'badge-struggling' : (node.status === 'LOCKED' ? 'badge-locked' : 'badge-learning'))}`;
+
+    const prereqBox = document.getElementById("modal-unmet-prereqs-box");
+    const prereqList = document.getElementById("modal-unmet-list");
+    if (node.is_locked && node.unmet_prereqs && node.unmet_prereqs.length > 0) {
+      prereqBox.style.display = "block";
+      prereqList.innerHTML = node.unmet_prereqs.map(p => 
+        `<div>• Requires <strong>${p.title}</strong> at ≥${p.required_mastery}% (Current: ${p.current_mastery}%)</div>`
+      ).join('');
+    } else {
+      prereqBox.style.display = "none";
+    }
+
+    document.getElementById("modal-action-practice").href = `/assessment?concept_id=${node.id}`;
+    document.getElementById("modal-action-gaps").href = `/learning-gaps?concept_id=${node.id}`;
+    document.getElementById("concept-modal").classList.add("active");
+  };
+});
+</script>
+{% endblock %}

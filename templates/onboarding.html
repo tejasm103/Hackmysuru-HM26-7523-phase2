@@ -1,0 +1,206 @@
+{% extends "base.html" %}
+
+{% block title %}Student Personalization Onboarding — AdaptiveLearn AI{% endblock %}
+
+{% block content %}
+<div style="min-height: 85vh; display: flex; align-items: center; justify-content: center; padding: 2rem 1rem;">
+  <div class="glass-card fade-in" style="max-width: 680px; width: 100%; padding: 2.5rem; position: relative;">
+    
+    <!-- Progress Dots Header -->
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+      <div>
+        <span class="badge badge-purple" style="font-size: 0.75rem;">Step 1 of 3</span>
+        <h1 style="font-size: 1.5rem; font-weight: 800; color: var(--text-primary); margin-top: 0.25rem;">
+          Configure Your Learning Profile
+        </h1>
+      </div>
+      <div style="display: flex; gap: 0.4rem;">
+        <span class="step-dot active"></span>
+        <span class="step-dot active"></span>
+        <span class="step-dot"></span>
+      </div>
+    </div>
+
+    <form id="onboarding-form">
+      
+      <!-- Academic Context Section -->
+      <div style="margin-bottom: 1.5rem;">
+        <h3 style="font-size: 1rem; font-weight: 700; color: var(--text-primary); margin-bottom: 0.75rem; display: flex; align-items: center; gap: 0.5rem;">
+          <span>🏫</span> Academic Standing
+        </h3>
+        
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
+          <div>
+            <label style="display: block; font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.35rem;">Current Education Level</label>
+            <select id="ob-level" class="input-field" style="width: 100%; background: rgba(15,23,42,0.9); border: 1px solid var(--border-color); color: var(--text-primary); padding: 0.7rem; border-radius: var(--radius-sm);">
+              <option value="Grade 10" selected>Grade 10 (Secondary)</option>
+              <option value="PUC">PUC (Pre-University 11th/12th)</option>
+              <option value="Diploma">Diploma (Polytechnic / Applied Tech)</option>
+              <option value="ITI">ITI (Vocational Training)</option>
+              <option value="Professional Course">Professional / Skill Course</option>
+            </select>
+          </div>
+
+          <div>
+            <label style="display: block; font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.35rem;">School / Institution Name</label>
+            <input type="text" id="ob-school" value="State Model High School" class="input-field" style="width: 100%; background: rgba(255,255,255,0.05); border: 1px solid var(--border-color); color: var(--text-primary); padding: 0.7rem; border-radius: var(--radius-sm);">
+          </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+          <div>
+            <label style="display: block; font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.35rem;">Stream / Department</label>
+            <select id="ob-stream" class="input-field" style="width: 100%; background: rgba(15,23,42,0.9); border: 1px solid var(--border-color); color: var(--text-primary); padding: 0.7rem; border-radius: var(--radius-sm);">
+              <option value="Science & Mathematics" selected>Science & Mathematics</option>
+              <option value="Commerce">Commerce</option>
+              <option value="Computer Science">Computer Science</option>
+              <option value="Electronics">Electronics</option>
+              <option value="Mechanical">Mechanical</option>
+              <option value="Civil">Civil</option>
+              <option value="Programming">Programming</option>
+            </select>
+          </div>
+
+          <div>
+            <label style="display: block; font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.35rem;">Target Initial Course</label>
+            <select id="ob-course" class="input-field" style="width: 100%; background: rgba(15,23,42,0.9); border: 1px solid var(--border-color); color: var(--text-primary); padding: 0.7rem; border-radius: var(--radius-sm);">
+              <option value="MATH-10" selected>Mathematics Grade 10 (Foundations & Stats)</option>
+              <option value="SCI-10">Science Grade 10 (Ecology & Genetics)</option>
+              <option value="CS-DIP">Diploma: Python Programming & Logic</option>
+              <option value="PHY-PUC">PUC: Physics Kinematics & Mechanics</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- Language & Localization -->
+      <div style="margin-bottom: 1.5rem;">
+        <h3 style="font-size: 1rem; font-weight: 700; color: var(--text-primary); margin-bottom: 0.75rem; display: flex; align-items: center; gap: 0.5rem;">
+          <span>🌐</span> Preferred Language for Subtitles & Explanations
+        </h3>
+        <select id="ob-lang" class="input-field" style="width: 100%; background: rgba(15,23,42,0.9); border: 1px solid var(--border-color); color: var(--text-primary); padding: 0.7rem; border-radius: var(--radius-sm);">
+          <option value="English" selected>English (Default)</option>
+          <option value="Kannada">ಕನ್ನಡ (Kannada AI Translation)</option>
+          <option value="Hindi">हिन्दी (Hindi AI Translation)</option>
+          <option value="Telugu">తెలుగు (Telugu AI Translation)</option>
+          <option value="Tamil">தமிழ் (Tamil AI Translation)</option>
+          <option value="Malayalam">മലയാളം (Malayalam AI Translation)</option>
+        </select>
+      </div>
+
+      <!-- Learning Interests (Interactive Pills) -->
+      <div style="margin-bottom: 1.5rem;">
+        <h3 style="font-size: 1rem; font-weight: 700; color: var(--text-primary); margin-bottom: 0.4rem; display: flex; align-items: center; gap: 0.5rem;">
+          <span>✨</span> Select Learning Interests (Used for Contextual Re-Theming)
+        </h3>
+        <p style="font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 0.75rem;">
+          Our AI personalizes narrative questions and missions to your interests while preserving core mathematical logic.
+        </p>
+
+        <div id="interest-pill-container" style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+          <button type="button" class="interest-pill active" data-val="Space & Astronomy">🚀 Space & Astronomy</button>
+          <button type="button" class="interest-pill active" data-val="Robotics & Automation">🤖 Robotics & Automation</button>
+          <button type="button" class="interest-pill" data-val="Biological Ecology">🌿 Biological Ecology</button>
+          <button type="button" class="interest-pill" data-val="Game Development">🎮 Game Development</button>
+          <button type="button" class="interest-pill" data-val="Data Science & AI">📊 Data Science & AI</button>
+          <button type="button" class="interest-pill" data-val="Aerospace Engineering">✈️ Aerospace Engineering</button>
+          <button type="button" class="interest-pill" data-val="Medical Technology">🧬 Medical Technology</button>
+        </div>
+      </div>
+
+      <!-- Goals -->
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 2rem;">
+        <div>
+          <label style="display: block; font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.35rem;">Primary Learning Goal</label>
+          <input type="text" id="ob-learning-goal" value="Master Core Foundations with 85%+ Competency" class="input-field" style="width: 100%; background: rgba(255,255,255,0.05); border: 1px solid var(--border-color); color: var(--text-primary); padding: 0.7rem; border-radius: var(--radius-sm);">
+        </div>
+        <div>
+          <label style="display: block; font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.35rem;">Aspirational Career Direction</label>
+          <input type="text" id="ob-career-goal" value="Explore Aerospace or Software Engineering" class="input-field" style="width: 100%; background: rgba(255,255,255,0.05); border: 1px solid var(--border-color); color: var(--text-primary); padding: 0.7rem; border-radius: var(--radius-sm);">
+        </div>
+      </div>
+
+      <button type="submit" id="btn-submit-ob" class="btn btn-primary" style="width: 100%; padding: 0.85rem; font-size: 1rem; justify-content: center;">
+        Save Profile & Begin Diagnostic Assessment &rarr;
+      </button>
+    </form>
+
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const pills = document.querySelectorAll('.interest-pill');
+  pills.forEach(p => {
+    p.addEventListener('click', () => {
+      p.classList.toggle('active');
+    });
+  });
+
+  document.getElementById('onboarding-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const btn = document.getElementById('btn-submit-ob');
+    btn.disabled = true;
+    btn.innerText = "Saving profile & configuring adaptive graph...";
+
+    const selectedInterests = [];
+    document.querySelectorAll('.interest-pill.active').forEach(p => selectedInterests.push(p.dataset.val));
+
+    const payload = {
+      study_level: document.getElementById('ob-level').value,
+      school_name: document.getElementById('ob-school').value,
+      stream: document.getElementById('ob-stream').value,
+      course_code: document.getElementById('ob-course').value,
+      preferred_language: document.getElementById('ob-lang').value,
+      learning_goal: document.getElementById('ob-learning-goal').value,
+      career_goal: document.getElementById('ob-career-goal').value,
+      interests: selectedInterests.length > 0 ? selectedInterests : ["Space & Astronomy"]
+    };
+
+    try {
+      const res = await API.post('/api/onboarding', payload);
+      if (res && res.status === 'success') {
+        window.location.href = '/assessment';
+      } else {
+        window.location.href = '/dashboard';
+      }
+    } catch (err) {
+      window.location.href = '/assessment';
+    }
+  });
+});
+</script>
+<style>
+.step-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.2);
+}
+.step-dot.active {
+  background: var(--accent-purple);
+}
+.interest-pill {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid var(--border-color);
+  color: var(--text-secondary);
+  padding: 0.4rem 0.85rem;
+  border-radius: 999px;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+.interest-pill:hover {
+  background: rgba(255,255,255,0.08);
+  color: var(--text-primary);
+}
+.interest-pill.active {
+  background: rgba(139, 92, 246, 0.2);
+  border-color: var(--accent-purple);
+  color: #fff;
+  font-weight: 600;
+}
+</style>
+{% endblock %}

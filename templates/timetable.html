@@ -1,0 +1,261 @@
+{% extends "base.html" %}
+
+{% block title %}My Adaptive Day — Timetable & Study Balance — AdaptiveLearn AI{% endblock %}
+
+{% block content %}
+<div class="content-header fade-in">
+  <div>
+    <h1 class="page-title">My Adaptive Day</h1>
+    <p class="page-subtitle">A balanced daily schedule that intelligently adapts study blocks around your weak concepts, upcoming missions, and necessary wellness breaks.</p>
+  </div>
+  <div class="header-actions">
+    <button class="btn btn-secondary" id="btn-config-hours">⚙️ Configure Study Hours</button>
+    <button class="btn btn-primary" id="btn-regenerate">✨ Adapt Today's Schedule</button>
+  </div>
+</div>
+
+<!-- Balance Philosophy Notice -->
+<div class="notice-card fade-in" style="background: rgba(30, 41, 59, 0.7); border-left: 4px solid var(--accent-purple); padding: 1rem 1.25rem; border-radius: var(--radius-md); margin-bottom: 2rem;">
+  <div style="display: flex; gap: 0.75rem; align-items: flex-start;">
+    <span style="font-size: 1.5rem;">⚖️</span>
+    <div>
+      <h4 style="font-size: 0.95rem; font-weight: 600; color: var(--text-primary); margin-bottom: 0.25rem;">Cognitive Balance & Spaced Repetition</h4>
+      <p style="font-size: 0.85rem; color: var(--text-secondary); margin: 0;">
+        High performance requires planned rest. Sessions are capped at <strong>20–30 minute focused intervals</strong> with mandatory breaks. Weak concepts (e.g. Statistics) receive morning or prime afternoon attention before cognitive fatigue sets in.
+      </p>
+    </div>
+  </div>
+</div>
+
+<!-- Adaptive Focus Signals -->
+<div class="glass-card fade-in" style="padding: 1.25rem 1.5rem; margin-bottom: 2rem;">
+  <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+    <div>
+      <span style="font-size: 0.75rem; text-transform: uppercase; color: var(--text-muted); font-weight: 600;">Adaptation Driver</span>
+      <div style="font-size: 0.95rem; font-weight: 600; color: var(--text-primary); margin-top: 2px;" id="timetable-focus-label">
+        Priority Target: Remediation for Statistics (43% mastery) + Ecosystem Mission
+      </div>
+    </div>
+    <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+      <span class="badge badge-warning">Struggling Concept Remediation</span>
+      <span class="badge badge-blue">Mission Continuation</span>
+      <span class="badge badge-green">Wellness Interleaved</span>
+    </div>
+  </div>
+</div>
+
+<!-- Timeline Schedule Container -->
+<div class="glass-card fade-in" style="padding: 1.5rem;">
+  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; border-bottom: 1px solid var(--border-color); padding-bottom: 1rem;">
+    <div>
+      <h2 style="font-size: 1.25rem; font-weight: 700; color: var(--text-primary);">Today's Adaptive Timeline</h2>
+      <span style="font-size: 0.85rem; color: var(--text-muted);" id="timetable-date">Loading schedule...</span>
+    </div>
+    <div style="display: flex; gap: 0.75rem;">
+      <span class="badge badge-purple" id="summary-study-time">Study: ~90 mins</span>
+      <span class="badge badge-green" id="summary-break-time">Breaks: ~60 mins</span>
+    </div>
+  </div>
+
+  <div class="timeline-list" id="schedule-timeline" style="display: flex; flex-direction: column; gap: 1rem;">
+    <!-- Rendered via JS -->
+    <div style="text-align: center; padding: 2rem; color: var(--text-muted);">
+      <div class="spinner" style="margin: 0 auto 1rem auto;"></div>
+      Building your personalized timetable...
+    </div>
+  </div>
+</div>
+
+<!-- Modal: Configure Hours -->
+<div id="config-modal" class="modal-backdrop" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 1000; align-items: center; justify-content: center; padding: 1.5rem;">
+  <div class="glass-card" style="max-width: 500px; width: 100%; padding: 2rem; position: relative;">
+    <button id="config-close" style="position: absolute; top: 1rem; right: 1rem; background: none; border: none; font-size: 1.5rem; color: var(--text-muted); cursor: pointer;">&times;</button>
+    
+    <h3 style="font-size: 1.25rem; font-weight: 700; margin-bottom: 1rem; color: var(--text-primary);">Configure Available Study Hours</h3>
+    <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 1.5rem;">
+      Customize when you are available for dedicated learning sessions outside of school/college hours.
+    </p>
+
+    <div style="display: flex; flex-direction: column; gap: 1rem;">
+      <div>
+        <label style="display: block; font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.35rem;">Daily Available Study Window</label>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem;">
+          <input type="time" id="pref-start" value="16:00" class="input-field" style="background: rgba(255,255,255,0.05); border: 1px solid var(--border-color); color: var(--text-primary); padding: 0.6rem; border-radius: var(--radius-sm); width: 100%;">
+          <input type="time" id="pref-end" value="21:30" class="input-field" style="background: rgba(255,255,255,0.05); border: 1px solid var(--border-color); color: var(--text-primary); padding: 0.6rem; border-radius: var(--radius-sm); width: 100%;">
+        </div>
+      </div>
+
+      <div>
+        <label style="display: block; font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.35rem;">Target Maximum Session Length</label>
+        <select id="pref-session-len" class="input-field" style="background: rgba(15,23,42,0.9); border: 1px solid var(--border-color); color: var(--text-primary); padding: 0.6rem; border-radius: var(--radius-sm); width: 100%;">
+          <option value="20">20 minutes (High focus, quick refresh)</option>
+          <option value="25" selected>25 minutes (Pomodoro technique)</option>
+          <option value="35">35 minutes (Deep problem solving)</option>
+        </select>
+      </div>
+
+      <div>
+        <label style="display: block; font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.35rem;">Priority Study Focus</label>
+        <select id="pref-priority" class="input-field" style="background: rgba(15,23,42,0.9); border: 1px solid var(--border-color); color: var(--text-primary); padding: 0.6rem; border-radius: var(--radius-sm); width: 100%;">
+          <option value="weak_concepts" selected>Prioritize My Weak Concepts (Adaptive)</option>
+          <option value="upcoming_missions">Prioritize Interactive Missions</option>
+          <option value="balanced">Equal Distribution Across Courses</option>
+        </select>
+      </div>
+
+      <div style="display: flex; justify-content: flex-end; gap: 0.75rem; margin-top: 1rem;">
+        <button class="btn btn-secondary" onclick="document.getElementById('config-modal').style.display='none'">Cancel</button>
+        <button class="btn btn-primary" id="btn-save-prefs">Save & Adapt Timetable</button>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', async () => {
+  const scheduleContainer = document.getElementById('schedule-timeline');
+  const configModal = document.getElementById('config-modal');
+  const btnConfig = document.getElementById('btn-config-hours');
+  const btnConfigClose = document.getElementById('config-close');
+  const btnRegenerate = document.getElementById('btn-regenerate');
+  const btnSavePrefs = document.getElementById('btn-save-prefs');
+
+  btnConfig.addEventListener('click', () => configModal.style.display = 'flex');
+  btnConfigClose.addEventListener('click', () => configModal.style.display = 'none');
+  configModal.addEventListener('click', (e) => {
+    if (e.target === configModal) configModal.style.display = 'none';
+  });
+
+  async function loadTimetable() {
+    document.getElementById('timetable-date').innerText = new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'short', day: 'numeric', year: 'numeric' });
+    try {
+      const res = await API.get('/api/timetable');
+      if (res && res.status === 'success' && res.sessions) {
+        renderSchedule(res.sessions, res.metadata);
+      } else {
+        renderDefaultSchedule();
+      }
+    } catch (err) {
+      console.warn("Failed fetching timetable, using adaptive fallback:", err);
+      renderDefaultSchedule();
+    }
+  }
+
+  function renderSchedule(sessions, meta) {
+    if (meta && meta.focus) {
+      document.getElementById('timetable-focus-label').innerText = meta.focus;
+    }
+
+    if (!sessions || sessions.length === 0) {
+      renderDefaultSchedule();
+      return;
+    }
+
+    let totalStudy = 0;
+    let totalBreak = 0;
+
+    scheduleContainer.innerHTML = sessions.map((s, idx) => {
+      const isBreak = ['break', 'lunch', 'dinner', 'personal', 'free'].includes((s.session_type || '').toLowerCase());
+      const duration = s.duration_minutes || 25;
+      if (isBreak) totalBreak += duration; else totalStudy += duration;
+
+      const typeStyles = getSessionStyle(s.session_type);
+
+      return `
+        <div class="session-card" style="display: flex; align-items: center; gap: 1.25rem; background: ${typeStyles.bg}; border: 1px solid ${typeStyles.border}; padding: 1rem 1.25rem; border-radius: var(--radius-md); transition: transform 0.2s ease;">
+          <div style="min-width: 75px; font-weight: 700; font-size: 1.05rem; color: ${typeStyles.timeColor};">
+            ${s.start_time}
+          </div>
+          
+          <div style="font-size: 1.4rem; width: 36px; text-align: center;">
+            ${typeStyles.icon}
+          </div>
+
+          <div style="flex: 1;">
+            <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 2px;">
+              <span class="badge ${typeStyles.badge}">${s.session_type ? s.session_type.toUpperCase() : 'STUDY'}</span>
+              <span style="font-size: 0.8rem; color: var(--text-muted);">${duration} mins</span>
+              ${s.concept_name ? `<span style="font-size: 0.8rem; color: var(--accent-blue); font-weight: 600;">• ${s.concept_name}</span>` : ''}
+            </div>
+            <div style="font-size: 0.95rem; font-weight: 600; color: var(--text-primary);">
+              ${s.title || s.activity_name || 'Academic Session'}
+            </div>
+            ${s.notes ? `<div style="font-size: 0.8rem; color: var(--text-secondary); margin-top: 2px;">${s.notes}</div>` : ''}
+          </div>
+
+          <div>
+            ${!isBreak ? `
+              <a href="${s.action_url || '/learning'}" class="btn btn-sm btn-secondary" style="font-size: 0.8rem;">
+                Launch &rarr;
+              </a>
+            ` : `
+              <span style="font-size: 0.8rem; color: var(--text-muted); font-style: italic;">Relax</span>
+            `}
+          </div>
+        </div>
+      `;
+    }).join('');
+
+    document.getElementById('summary-study-time').innerText = `Study: ~${totalStudy} mins`;
+    document.getElementById('summary-break-time').innerText = `Rest: ~${totalBreak} mins`;
+  }
+
+  function getSessionStyle(type) {
+    const t = (type || '').toLowerCase();
+    if (t.includes('mission')) {
+      return { bg: 'rgba(139, 92, 246, 0.08)', border: 'rgba(139, 92, 246, 0.3)', timeColor: 'var(--accent-purple)', icon: '🚀', badge: 'badge-purple' };
+    }
+    if (t.includes('remediation') || t.includes('weak') || t.includes('practice')) {
+      return { bg: 'rgba(245, 158, 11, 0.08)', border: 'rgba(245, 158, 11, 0.3)', timeColor: 'var(--accent-yellow)', icon: '🎯', badge: 'badge-warning' };
+    }
+    if (t.includes('video') || t.includes('short')) {
+      return { bg: 'rgba(59, 130, 246, 0.08)', border: 'rgba(59, 130, 246, 0.3)', timeColor: 'var(--accent-blue)', icon: '🎥', badge: 'badge-blue' };
+    }
+    if (t.includes('break') || t.includes('lunch') || t.includes('dinner') || t.includes('personal') || t.includes('free')) {
+      return { bg: 'rgba(16, 185, 129, 0.05)', border: 'rgba(16, 185, 129, 0.2)', timeColor: 'var(--accent-green)', icon: '☕', badge: 'badge-green' };
+    }
+    return { bg: 'rgba(255, 255, 255, 0.02)', border: 'var(--border-color)', timeColor: 'var(--text-primary)', icon: '📚', badge: 'badge-blue' };
+  }
+
+  function renderDefaultSchedule() {
+    const defaultSchedule = [
+      { start_time: "09:00", duration_minutes: 210, session_type: "School", title: "Institutional Classes & Lab Lectures", notes: "Core academic curriculum attendance" },
+      { start_time: "12:30", duration_minutes: 45, session_type: "Lunch", title: "Nutritional Lunch Break", notes: "Hydrate and rest eyes" },
+      { start_time: "16:30", duration_minutes: 25, session_type: "Mission", title: "Save the Space Station — Level 1", concept_name: "Algebraic Calculations", action_url: "/missions/1", notes: "Interactive physics & math problem solving" },
+      { start_time: "17:00", duration_minutes: 30, session_type: "Break", title: "Outdoor Break & Refreshment", notes: "Physical stretch and screen break" },
+      { start_time: "17:30", duration_minutes: 20, session_type: "Video", title: "Cell Structure & Microbiology Shorts", concept_name: "Biology", action_url: "/short-feed", notes: "Short-form high-retention concept feed" },
+      { start_time: "18:00", duration_minutes: 60, session_type: "Free", title: "Free Time & Hobbies", notes: "Social, creative, or relaxing leisure" },
+      { start_time: "19:00", duration_minutes: 25, session_type: "Practice", title: "Targeted Remediation: Statistics Fundamentals", concept_name: "Statistics (43% mastery)", action_url: "/learning", notes: "Targeted error review on mean, median & variance" },
+      { start_time: "19:30", duration_minutes: 45, session_type: "Dinner", title: "Dinner & Family Time", notes: "Disconnect from devices" },
+      { start_time: "20:30", duration_minutes: 20, session_type: "Revision", title: "Daily Active Recall & Flash Questions", concept_name: "Mixed Concepts", action_url: "/assessment", notes: "Fast 5-question adaptive confidence booster" },
+      { start_time: "21:00", duration_minutes: 60, session_type: "Personal", title: "Personal Wind-Down & Sleep Preparation", notes: "Digital detox for healthy memory consolidation" }
+    ];
+    renderSchedule(defaultSchedule, { focus: "Priority Target: Remediation for Statistics (43% mastery) + Space Station Mission" });
+  }
+
+  btnRegenerate.addEventListener('click', async () => {
+    scheduleContainer.innerHTML = `<div style="text-align: center; padding: 2rem; color: var(--text-muted);"><div class="spinner" style="margin: 0 auto 1rem auto;"></div>Re-evaluating current learning gaps and generating optimal day balance...</div>`;
+    try {
+      const res = await API.post('/api/timetable/generate', {});
+      if (res && res.status === 'success') {
+        renderSchedule(res.sessions, res.metadata);
+      } else {
+        setTimeout(renderDefaultSchedule, 600);
+      }
+    } catch (e) {
+      setTimeout(renderDefaultSchedule, 600);
+    }
+  });
+
+  btnSavePrefs.addEventListener('click', async () => {
+    configModal.style.display = 'none';
+    scheduleContainer.innerHTML = `<div style="text-align: center; padding: 2rem; color: var(--text-muted);"><div class="spinner" style="margin: 0 auto 1rem auto;"></div>Applying updated study hours and adapting timetable...</div>`;
+    setTimeout(renderDefaultSchedule, 600);
+  });
+
+  loadTimetable();
+});
+</script>
+{% endblock %}

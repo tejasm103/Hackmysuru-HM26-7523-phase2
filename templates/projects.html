@@ -1,0 +1,126 @@
+{% extends "base.html" %}
+
+{% block title %}Collaborative Academic Projects — AdaptiveLearn AI{% endblock %}
+
+{% block content %}
+<div class="content-header fade-in">
+  <div>
+    <h1 class="page-title">Collaborative Academic Projects</h1>
+    <p class="page-subtitle">Cross-disciplinary projects bridging Mathematics, Science, and Computing. Apply your mastered concepts to solve tangible challenges with peer teams.</p>
+  </div>
+  <div class="header-actions">
+    <a href="/community" class="btn btn-secondary">&larr; Community</a>
+    <button class="btn btn-primary" onclick="alert('Project submissions are open under Facilitator supervision.')">+ Propose Academic Project</button>
+  </div>
+</div>
+
+<div class="dashboard-grid fade-in" id="projects-grid" style="grid-template-columns: repeat(auto-fit, minmax(360px, 1fr)); gap: 1.5rem;">
+  <!-- Rendered via JS -->
+  <div class="glass-card" style="padding: 2.5rem; text-align: center; color: var(--text-muted); grid-column: 1 / -1;">
+    <div class="spinner" style="margin: 0 auto 1rem auto;"></div>
+    Loading academic project portfolio...
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', async () => {
+  const grid = document.getElementById('projects-grid');
+
+  async function loadProjects() {
+    try {
+      const res = await API.get('/api/projects');
+      if (res && res.projects && res.projects.length > 0) {
+        renderProjects(res.projects);
+      } else {
+        renderDefaultProjects();
+      }
+    } catch (e) {
+      renderDefaultProjects();
+    }
+  }
+
+  function renderProjects(projects) {
+    grid.innerHTML = projects.map(p => `
+      <div class="glass-card hover-glow" style="padding: 1.5rem; display: flex; flex-direction: column; justify-content: space-between;">
+        <div>
+          <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.75rem;">
+            <span class="badge ${p.badge_color || 'badge-green'}">${p.category || 'Cross-Disciplinary'}</span>
+            <span style="font-size: 0.8rem; color: var(--text-muted);">${p.member_count || 4} Collaborators</span>
+          </div>
+
+          <h3 style="font-size: 1.25rem; font-weight: 700; color: var(--text-primary); margin-bottom: 0.5rem;">
+            ${p.title}
+          </h3>
+
+          <p style="font-size: 0.9rem; color: var(--text-secondary); line-height: 1.5; margin-bottom: 1.25rem;">
+            ${p.description}
+          </p>
+
+          <div style="margin-bottom: 1.25rem;">
+            <div style="display: flex; justify-content: space-between; font-size: 0.8rem; margin-bottom: 0.35rem;">
+              <span style="color: var(--text-muted);">Milestones Completed</span>
+              <strong style="color: var(--accent-blue);">${p.progress_percent || 65}%</strong>
+            </div>
+            <div class="progress-bar-container" style="height: 6px; background: rgba(255,255,255,0.1); border-radius: 3px; overflow: hidden;">
+              <div class="progress-bar-fill" style="width: ${p.progress_percent || 65}%; height: 100%; background: var(--accent-blue);"></div>
+            </div>
+          </div>
+
+          <div style="background: rgba(255,255,255,0.02); border: 1px solid var(--border-color); padding: 0.75rem 1rem; border-radius: var(--radius-sm); margin-bottom: 1.25rem;">
+            <div style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase;">Facilitator Feedback</div>
+            <div style="font-size: 0.85rem; color: var(--text-secondary); margin-top: 2px;">
+              "${p.feedback || 'Great hypothesis formulation. Validate data variance before drawing conclusions.'}"
+            </div>
+          </div>
+        </div>
+
+        <div style="border-top: 1px solid var(--border-color); padding-top: 1rem; display: flex; justify-content: space-between; align-items: center;">
+          <span style="font-size: 0.8rem; color: var(--text-muted);">Tasks: ${p.tasks_count || '4 active'}</span>
+          <button class="btn btn-sm btn-primary" onclick="alert('Project workspace opened. Review tasks and milestone deliverables.')">Open Workspace &rarr;</button>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  function renderDefaultProjects() {
+    const defaults = [
+      {
+        title: "Smart Agriculture Soil Monitoring",
+        category: "Science + Computer Science",
+        badge_color: "badge-green",
+        member_count: 5,
+        progress_percent: 75,
+        description: "Designing moisture and pH sensor data collection scripts with microcontrollers to model crop yield dynamics.",
+        feedback: "Calibration logic is solid. Next step: integrate automated water replenishment threshold.",
+        tasks_count: "5/7 completed"
+      },
+      {
+        title: "School Survey Analytics & Visualizer",
+        category: "Mathematics + Computer Science",
+        badge_color: "badge-blue",
+        member_count: 4,
+        progress_percent: 60,
+        description: "Collecting student study-habit surveys and applying statistics (mean, median, standard deviation) to discover learning trends.",
+        feedback: "Ensure sample sizes are representative across grades before running t-tests.",
+        tasks_count: "3/5 completed"
+      },
+      {
+        title: "Beginner Computer Vision Sorter",
+        category: "Computer Science / AI",
+        badge_color: "badge-purple",
+        member_count: 3,
+        progress_percent: 40,
+        description: "Building an automated image classifier using Python decision rules to sort recyclable materials.",
+        feedback: "Start with binary classification before moving to multi-class detection.",
+        tasks_count: "2/6 completed"
+      }
+    ];
+    renderProjects(defaults);
+  }
+
+  loadProjects();
+});
+</script>
+{% endblock %}

@@ -1,0 +1,130 @@
+{% extends "base.html" %}
+
+{% block title %}Sign In — AdaptiveLearn AI{% endblock %}
+
+{% block content %}
+<div style="min-height: 75vh; display: flex; align-items: center; justify-content: center; padding: 2rem 1rem;">
+  <div class="glass-card fade-in" style="max-width: 480px; width: 100%; padding: 2.5rem; position: relative;">
+    
+    <div style="text-align: center; margin-bottom: 2rem;">
+      <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">🧠</div>
+      <h1 style="font-size: 1.6rem; font-weight: 800; color: var(--text-primary); letter-spacing: -0.02em;">Welcome Back</h1>
+      <p style="font-size: 0.88rem; color: var(--text-secondary); margin-top: 0.35rem;">
+        Sign in to continue your personalized adaptive learning journey.
+      </p>
+    </div>
+
+    <!-- Error Alert Box -->
+    <div id="login-error" style="display: none; background: rgba(239, 68, 68, 0.15); border: 1px solid var(--accent-red); color: #fca5a5; padding: 0.75rem 1rem; border-radius: var(--radius-sm); font-size: 0.85rem; margin-bottom: 1.5rem;">
+    </div>
+
+    <form id="login-form">
+      <div style="margin-bottom: 1.25rem;">
+        <label for="login-email" style="display: block; font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.4rem; font-weight: 500;">
+          Email Address
+        </label>
+        <input type="email" id="login-email" required placeholder="e.g. rahul@adaptivelearn.ai" style="width: 100%; background: rgba(255,255,255,0.05); border: 1px solid var(--border-color); color: var(--text-primary); padding: 0.75rem 1rem; border-radius: var(--radius-sm); font-size: 0.95rem; outline: none; transition: border 0.2s;">
+      </div>
+
+      <div style="margin-bottom: 1.75rem;">
+        <label for="login-password" style="display: block; font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.4rem; font-weight: 500;">
+          Password
+        </label>
+        <input type="password" id="login-password" required placeholder="••••••••" style="width: 100%; background: rgba(255,255,255,0.05); border: 1px solid var(--border-color); color: var(--text-primary); padding: 0.75rem 1rem; border-radius: var(--radius-sm); font-size: 0.95rem; outline: none; transition: border 0.2s;">
+      </div>
+
+      <button type="submit" id="btn-login-submit" class="btn btn-primary" style="width: 100%; padding: 0.8rem; font-size: 1rem; justify-content: center;">
+        Sign In &rarr;
+      </button>
+    </form>
+
+    <div style="margin-top: 2rem; border-top: 1px solid var(--border-color); padding-top: 1.5rem;">
+      <div style="font-size: 0.75rem; text-transform: uppercase; color: var(--text-muted); font-weight: 700; letter-spacing: 0.05em; text-align: center; margin-bottom: 1rem;">
+        ⚡ Instant Hackathon Demo Sign-In
+      </div>
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.6rem;">
+        <button class="quick-demo-btn" onclick="fillAndLogin('rahul@adaptivelearn.ai', 'password123')">
+          <span style="font-weight: 600; color: var(--accent-red);">🔴 Rahul (Struggling)</span>
+          <span style="font-size: 0.7rem; color: var(--text-muted); display: block;">Math • Stat 43% • Needs Support</span>
+        </button>
+        <button class="quick-demo-btn" onclick="fillAndLogin('priya@adaptivelearn.ai', 'password123')">
+          <span style="font-weight: 600; color: var(--accent-green);">🟢 Priya (Mastering)</span>
+          <span style="font-size: 0.7rem; color: var(--text-muted); display: block;">Math • Stat 82% • Improving</span>
+        </button>
+        <button class="quick-demo-btn" onclick="fillAndLogin('arjun@adaptivelearn.ai', 'password123')">
+          <span style="font-weight: 600; color: var(--accent-blue);">🔵 Arjun (Diploma CS)</span>
+          <span style="font-size: 0.7rem; color: var(--text-muted); display: block;">Python 68% • Stable</span>
+        </button>
+        <button class="quick-demo-btn" onclick="fillAndLogin('facilitator@adaptivelearn.ai', 'password123')">
+          <span style="font-weight: 600; color: var(--accent-purple);">👨‍🏫 Dr. Vikram (Facilitator)</span>
+          <span style="font-size: 0.7rem; color: var(--text-muted); display: block;">Intervention Console</span>
+        </button>
+      </div>
+    </div>
+
+    <div style="text-align: center; margin-top: 1.5rem; font-size: 0.85rem; color: var(--text-secondary);">
+      New student? <a href="/register" style="color: var(--accent-blue); font-weight: 600;">Create Account &rarr;</a>
+    </div>
+
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+window.fillAndLogin = async function(email, pass) {
+  document.getElementById('login-email').value = email;
+  document.getElementById('login-password').value = pass;
+  document.getElementById('login-form').dispatchEvent(new Event('submit'));
+};
+
+document.getElementById('login-form').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const errBox = document.getElementById('login-error');
+  errBox.style.display = 'none';
+
+  const email = document.getElementById('login-email').value.trim();
+  const password = document.getElementById('login-password').value;
+  const btn = document.getElementById('btn-login-submit');
+
+  btn.disabled = true;
+  btn.innerText = "Signing in...";
+
+  try {
+    const res = await API.post('/api/auth/login', { email, password });
+    if (res && res.status === 'success') {
+      if (res.user.role === 'facilitator') {
+        window.location.href = '/facilitator';
+      } else {
+        window.location.href = '/dashboard';
+      }
+    } else {
+      errBox.innerText = res.error || "Invalid credentials. Please try again.";
+      errBox.style.display = 'block';
+    }
+  } catch (err) {
+    errBox.innerText = "Login failed. Check your network or credentials.";
+    errBox.style.display = 'block';
+  } finally {
+    btn.disabled = false;
+    btn.innerText = "Sign In →";
+  }
+});
+</script>
+<style>
+.quick-demo-btn {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid var(--border-color);
+  padding: 0.6rem 0.75rem;
+  border-radius: var(--radius-sm);
+  text-align: left;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+.quick-demo-btn:hover {
+  background: rgba(255,255,255,0.07);
+  border-color: var(--accent-blue);
+  transform: translateY(-1px);
+}
+</style>
+{% endblock %}

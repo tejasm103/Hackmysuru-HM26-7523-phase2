@@ -1,0 +1,113 @@
+{% extends "base.html" %}
+
+{% block title %}Peer Study Groups — AdaptiveLearn AI{% endblock %}
+
+{% block content %}
+<div class="content-header fade-in">
+  <div>
+    <h1 class="page-title">Peer Study Groups</h1>
+    <p class="page-subtitle">Collaborate with peers tackling the same prerequisite challenges, exchange hints, and master tough concepts together.</p>
+  </div>
+  <div class="header-actions">
+    <a href="/community" class="btn btn-secondary">&larr; Back to Community</a>
+    <button class="btn btn-primary" onclick="alert('Study Group creation is open for Facilitators and senior peers.')">+ Form New Study Group</button>
+  </div>
+</div>
+
+<div class="dashboard-grid fade-in" id="study-groups-grid" style="grid-template-columns: repeat(auto-fit, minmax(360px, 1fr)); gap: 1.5rem;">
+  <!-- Rendered via JS -->
+  <div class="glass-card" style="padding: 2.5rem; text-align: center; color: var(--text-muted); grid-column: 1 / -1;">
+    <div class="spinner" style="margin: 0 auto 1rem auto;"></div>
+    Loading active study groups...
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', async () => {
+  const grid = document.getElementById('study-groups-grid');
+
+  async function loadGroups() {
+    try {
+      const res = await API.get('/api/study-groups');
+      if (res && res.study_groups && res.study_groups.length > 0) {
+        renderGroups(res.study_groups);
+      } else {
+        renderDefaultGroups();
+      }
+    } catch (e) {
+      renderDefaultGroups();
+    }
+  }
+
+  function renderGroups(groups) {
+    grid.innerHTML = groups.map(g => `
+      <div class="glass-card hover-glow" style="padding: 1.5rem; display: flex; flex-direction: column; justify-content: space-between;">
+        <div>
+          <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.75rem;">
+            <span class="badge badge-blue">${g.course_title || 'Mathematics'}</span>
+            <span class="badge badge-purple">${g.current_member_count || g.member_count || 12} Members</span>
+          </div>
+
+          <h3 style="font-size: 1.25rem; font-weight: 700; color: var(--text-primary); margin-bottom: 0.5rem;">
+            ${g.name || 'Study Group'}
+          </h3>
+
+          <p style="font-size: 0.9rem; color: var(--text-secondary); line-height: 1.5; margin-bottom: 1.25rem;">
+            ${g.description || 'Focused peer circle targeting foundational mastery and step-by-step problem breakdown.'}
+          </p>
+
+          <div style="background: rgba(255,255,255,0.03); border: 1px solid var(--border-color); padding: 0.75rem 1rem; border-radius: var(--radius-sm); margin-bottom: 1.25rem;">
+            <div style="font-size: 0.75rem; text-transform: uppercase; color: var(--text-muted); font-weight: 600;">Current Focus Concept</div>
+            <div style="font-size: 0.95rem; font-weight: 600; color: var(--accent-yellow); margin-top: 2px;">
+              🎯 ${g.concept_title || 'Probability & Statistics Fundamentals'}
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <div style="display: flex; gap: 0.5rem; margin-bottom: 1rem;">
+            <span class="badge badge-green" style="font-size: 0.75rem;">Active Missions</span>
+            <span class="badge badge-blue" style="font-size: 0.75rem;">Weekly Challenge</span>
+          </div>
+          <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--border-color); padding-top: 1rem;">
+            <span style="font-size: 0.8rem; color: var(--text-muted);">Facilitated Session</span>
+            <button class="btn btn-sm btn-primary" onclick="alert('You are enrolled in this study group discussion channel.')">Join Discussion &rarr;</button>
+          </div>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  function renderDefaultGroups() {
+    const defaults = [
+      {
+        name: "Probability Beginners",
+        course_title: "Mathematics • Grade 10",
+        current_member_count: 12,
+        concept_title: "Probability Rules & Multi-event Odds",
+        description: "A collaborative circle for learners moving from Statistics (0–69%) into Probability. Focuses on intuitive coin/dice logic and sample spaces."
+      },
+      {
+        name: "Python Logic Solvers",
+        course_title: "Computer Science • Diploma",
+        current_member_count: 9,
+        concept_title: "Control Flow & Algorithm Debugging",
+        description: "Peer programming group helping each other tackle loop edge cases and variable tracing before advancing to functions."
+      },
+      {
+        name: "Ecosystem Balance Lab",
+        course_title: "Science • Grade 10",
+        current_member_count: 15,
+        concept_title: "Trophic Levels & Ecological Equilibrium",
+        description: "Group members collaborate on the 'Build a Sustainable Ecosystem' interactive mission and share real-world ecology observations."
+      }
+    ];
+    renderGroups(defaults);
+  }
+
+  loadGroups();
+});
+</script>
+{% endblock %}

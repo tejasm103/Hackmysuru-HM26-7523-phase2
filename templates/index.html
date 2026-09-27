@@ -1,0 +1,187 @@
+{% extends "base.html" %}
+
+{% block title %}AdaptiveLearn AI — One platform. Shared knowledge. Personalized learning. Connected learners.{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<div class="hero-section fade-in" style="text-align: center; padding: 4.5rem 1rem 3rem 1rem; max-width: 900px; margin: 0 auto;">
+  <div style="display: inline-flex; align-items: center; gap: 0.5rem; background: rgba(139, 92, 246, 0.15); border: 1px solid rgba(139, 92, 246, 0.4); padding: 0.4rem 1rem; border-radius: 999px; margin-bottom: 1.5rem;">
+    <span style="font-size: 0.9rem;">✨</span>
+    <span style="font-size: 0.85rem; font-weight: 600; color: #c4b5fd;">Next-Generation Adaptive Learning & Intervention</span>
+  </div>
+
+  <h1 style="font-size: clamp(2.4rem, 5vw, 3.8rem); font-weight: 900; line-height: 1.15; letter-spacing: -0.03em; margin-bottom: 1.25rem;">
+    AdaptiveLearn <span style="background: linear-gradient(135deg, #60a5fa 0%, #a855f7 50%, #ec4899 100%); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;">AI</span>
+  </h1>
+
+  <p style="font-size: clamp(1.1rem, 2vw, 1.35rem); color: var(--text-secondary); line-height: 1.6; max-width: 720px; margin: 0 auto 2.25rem auto;">
+    “One platform. Shared knowledge. Personalized learning. Connected learners.”
+  </p>
+
+  <p style="font-size: 1rem; color: var(--text-muted); line-height: 1.6; max-width: 680px; margin: 0 auto 2.5rem auto;">
+    A continuous closed-loop adaptive learning engine. Dynamically assesses demonstrated mastery, scales difficulty, diagnoses stuck concepts, deploys interactive STEM missions, and flags real-time facilitator interventions via machine learning.
+  </p>
+
+  <!-- CTA Buttons -->
+  <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; margin-bottom: 3rem;">
+    <a href="/dashboard" class="btn btn-primary" style="padding: 0.85rem 1.75rem; font-size: 1.05rem;">
+      🚀 Launch Student Experience
+    </a>
+    <a href="/facilitator" class="btn btn-secondary" style="padding: 0.85rem 1.75rem; font-size: 1.05rem;">
+      👨‍🏫 Facilitator Console
+    </a>
+    <a href="/missions" class="btn btn-secondary" style="padding: 0.85rem 1.75rem; font-size: 1.05rem;">
+      🎮 Interactive Missions
+    </a>
+  </div>
+
+  <!-- Two-Student Demonstration Card -->
+  <div class="glass-card hover-glow" style="padding: 1.75rem; text-align: left; background: rgba(15, 23, 42, 0.7); border: 1px solid rgba(59, 130, 246, 0.3);">
+    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; margin-bottom: 1.25rem; border-bottom: 1px solid var(--border-color); padding-bottom: 0.75rem;">
+      <div>
+        <span class="badge badge-purple" style="font-size: 0.75rem;">CORE PROOF OF ADAPTIVITY</span>
+        <h3 style="font-size: 1.2rem; font-weight: 700; color: var(--text-primary); margin-top: 0.2rem;">
+          Two-Student Adaptive Path Demonstration
+        </h3>
+      </div>
+      <span style="font-size: 0.8rem; color: var(--text-muted);">Same Course • Same Knowledge Graph • Radically Different Paths</span>
+    </div>
+
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem;">
+      <!-- Student B: Rahul -->
+      <div style="background: rgba(239, 68, 68, 0.05); border: 1px solid rgba(239, 68, 68, 0.3); padding: 1.25rem; border-radius: var(--radius-sm);">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+          <strong style="color: var(--accent-red); font-size: 1.05rem;">Rahul (Struggling Learner)</strong>
+          <span class="badge badge-danger">ML: Needs Support</span>
+        </div>
+        <div style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 0.75rem;">
+          Statistics Mastery: <strong>43%</strong> • Attempts: 3 failed • Trend: Declining
+        </div>
+        <div style="font-size: 0.85rem; color: var(--text-primary); line-height: 1.5; margin-bottom: 1rem;">
+          &rarr; Probability is <strong>LOCKED 🔒</strong><br>
+          &rarr; Prerequisite Remediation Ladder triggered<br>
+          &rarr; Video: Beginner explanation of variance<br>
+          &rarr; Guided Mission & Easy Practice assigned<br>
+          &rarr; <strong>Real-time Facilitator Intervention generated</strong>
+        </div>
+        <button class="btn btn-sm btn-secondary" onclick="switchDemoUser('rahul', '/dashboard')">
+          View Rahul's Dashboard &rarr;
+        </button>
+      </div>
+
+      <!-- Student A: Priya -->
+      <div style="background: rgba(16, 185, 129, 0.05); border: 1px solid rgba(16, 185, 129, 0.3); padding: 1.25rem; border-radius: var(--radius-sm);">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+          <strong style="color: var(--accent-green); font-size: 1.05rem;">Priya (Mastering Learner)</strong>
+          <span class="badge badge-success">ML: Improving</span>
+        </div>
+        <div style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 0.75rem;">
+          Statistics Mastery: <strong>82%</strong> • Attempts: 1 • Trend: Rapid
+        </div>
+        <div style="font-size: 0.85rem; color: var(--text-primary); line-height: 1.5; margin-bottom: 1rem;">
+          &rarr; Probability is <strong>UNLOCKED 🔓</strong><br>
+          &rarr; Advanced Challenge & Hard Practice<br>
+          &rarr; Video: Deep-dive multi-event probability<br>
+          &rarr; Autonomous progression on Knowledge Graph<br>
+          &rarr; No facilitator intervention needed
+        </div>
+        <button class="btn btn-sm btn-secondary" onclick="switchDemoUser('priya', '/dashboard')">
+          View Priya's Dashboard &rarr;
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Architecture & Pillars Grid -->
+<div style="max-width: 1100px; margin: 0 auto 4rem auto; padding: 0 1rem;">
+  <div style="text-align: center; margin-bottom: 2.5rem;">
+    <h2 style="font-size: 1.75rem; font-weight: 800; color: var(--text-primary);">The Adaptive Pedagogical Architecture</h2>
+    <p style="color: var(--text-secondary); font-size: 0.95rem; margin-top: 0.25rem;">
+      Every element connects to the central adaptive engine and reinforces student mastery.
+    </p>
+  </div>
+
+  <div class="dashboard-grid" style="grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem;">
+    
+    <div class="glass-card hover-glow" style="padding: 1.5rem;">
+      <div style="font-size: 2rem; margin-bottom: 0.75rem;">🕸️</div>
+      <h3 style="font-size: 1.15rem; font-weight: 700; color: var(--text-primary); margin-bottom: 0.5rem;">
+        Knowledge Graph & 70% Gating
+      </h3>
+      <p style="font-size: 0.88rem; color: var(--text-secondary); line-height: 1.5;">
+        Concepts exist in a strict Directed Acyclic Graph (DAG). Dependent concepts remain locked until prerequisite mastery reaches 70%.
+      </p>
+      <div style="margin-top: 1rem;">
+        <a href="/knowledge-graph" style="font-size: 0.85rem; color: var(--accent-blue); font-weight: 600;">Explore Graph &rarr;</a>
+      </div>
+    </div>
+
+    <div class="glass-card hover-glow" style="padding: 1.5rem;">
+      <div style="font-size: 2rem; margin-bottom: 0.75rem;">🚀</div>
+      <h3 style="font-size: 1.15rem; font-weight: 700; color: var(--text-primary); margin-bottom: 0.5rem;">
+        Interactive Learning Missions
+      </h3>
+      <p style="font-size: 0.88rem; color: var(--text-secondary); line-height: 1.5;">
+        Learn by doing. Solve real challenges like <em>Save the Space Station</em> and <em>Build a Sustainable Ecosystem</em> with step-by-step automatic validation.
+      </p>
+      <div style="margin-top: 1rem;">
+        <a href="/missions" style="font-size: 0.85rem; color: var(--accent-purple); font-weight: 600;">Play Missions &rarr;</a>
+      </div>
+    </div>
+
+    <div class="glass-card hover-glow" style="padding: 1.5rem;">
+      <div style="font-size: 2rem; margin-bottom: 0.75rem;">🌳</div>
+      <h3 style="font-size: 1.15rem; font-weight: 700; color: var(--text-primary); margin-bottom: 0.5rem;">
+        Decision Tree ML State
+      </h3>
+      <p style="font-size: 0.88rem; color: var(--text-secondary); line-height: 1.5;">
+        Real scikit-learn Decision Tree extracts 8 cognitive features to classify learner trajectory: <code>IMPROVING</code>, <code>STABLE</code>, or <code>NEEDS_SUPPORT</code>.
+      </p>
+      <div style="margin-top: 1rem;">
+        <a href="/facilitator" style="font-size: 0.85rem; color: var(--accent-green); font-weight: 600;">See Model in Action &rarr;</a>
+      </div>
+    </div>
+
+    <div class="glass-card hover-glow" style="padding: 1.5rem;">
+      <div style="font-size: 2rem; margin-bottom: 0.75rem;">🎥</div>
+      <h3 style="font-size: 1.15rem; font-weight: 700; color: var(--text-primary); margin-bottom: 0.5rem;">
+        Video Interest Signals
+      </h3>
+      <p style="font-size: 0.88rem; color: var(--text-secondary); line-height: 1.5;">
+        Short educational feeds and YouTube lessons calibrate interest graphs. Video engagement is an <em>interest signal</em>, never conflated with mastery.
+      </p>
+      <div style="margin-top: 1rem;">
+        <a href="/short-feed" style="font-size: 0.85rem; color: var(--accent-yellow); font-weight: 600;">Open Short Feed &rarr;</a>
+      </div>
+    </div>
+
+    <div class="glass-card hover-glow" style="padding: 1.5rem;">
+      <div style="font-size: 2rem; margin-bottom: 0.75rem;">🎨</div>
+      <h3 style="font-size: 1.15rem; font-weight: 700; color: var(--text-primary); margin-bottom: 0.5rem;">
+        AI Contextual Re-Theming
+      </h3>
+      <p style="font-size: 0.88rem; color: var(--text-secondary); line-height: 1.5;">
+        Transforms math questions into space or robotics narratives while strictly preserving numbers, equations, and answers.
+      </p>
+      <div style="margin-top: 1rem;">
+        <a href="/assessment" style="font-size: 0.85rem; color: var(--accent-blue); font-weight: 600;">Try Re-Themed Assessment &rarr;</a>
+      </div>
+    </div>
+
+    <div class="glass-card hover-glow" style="padding: 1.5rem;">
+      <div style="font-size: 2rem; margin-bottom: 0.75rem;">👨‍🏫</div>
+      <h3 style="font-size: 1.15rem; font-weight: 700; color: var(--text-primary); margin-bottom: 0.5rem;">
+        Real-Time Facilitator Interventions
+      </h3>
+      <p style="font-size: 0.88rem; color: var(--text-secondary); line-height: 1.5;">
+        Detects struggling learners with declining performance trends, generating actionable remediation workflows for educators.
+      </p>
+      <div style="margin-top: 1rem;">
+        <a href="/facilitator" style="font-size: 0.85rem; color: var(--accent-purple); font-weight: 600;">Open Console &rarr;</a>
+      </div>
+    </div>
+
+  </div>
+</div>
+{% endblock %}

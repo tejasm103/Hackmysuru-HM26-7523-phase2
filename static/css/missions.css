@@ -1,0 +1,162 @@
+/* =======================================================
+   AdaptiveLearn AI - Missions & Simulator UI Styles
+   ======================================================= */
+
+.mission-workspace {
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+  gap: 28px;
+  align-items: start;
+}
+
+.mission-briefing {
+  background: var(--bg-card);
+  border: 1px solid var(--border-glow);
+  border-radius: var(--radius-lg);
+  padding: 28px;
+}
+
+.mission-theme-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  padding: 4px 10px;
+  border-radius: var(--radius-full);
+  background: rgba(139, 92, 246, 0.2);
+  color: #c4b5fd;
+  border: 1px solid rgba(139, 92, 246, 0.4);
+  margin-bottom: 12px;
+}
+
+.mission-simulator {
+  background: #090e24;
+  border: 1px solid rgba(6, 182, 212, 0.35);
+  border-radius: var(--radius-lg);
+  padding: 24px;
+  box-shadow: 0 0 30px rgba(6, 182, 212, 0.1);
+  position: sticky;
+  top: 96px;
+}
+
+.simulator-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 16px;
+  margin-bottom: 20px;
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.sim-screen {
+  background: #040816;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: var(--radius-md);
+  padding: 20px;
+  margin-bottom: 20px;
+  font-family: 'Courier New', Courier, monospace;
+  color: #38bdf8;
+  font-size: 13px;
+  min-height: 180px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.telemetry-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 8px;
+  border-bottom: 1px dashed rgba(255, 255, 255, 0.05);
+  padding-bottom: 4px;
+}
+
+.telemetry-val {
+  color: #4ade80;
+  font-weight: 700;
+}
+
+.step-card {
+  background: rgba(18, 28, 59, 0.5);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 20px;
+  margin-bottom: 16px;
+  transition: all var(--transition-fast);
+}
+
+.step-card.active {
+  border-color: var(--accent-primary);
+  background: rgba(99, 102, 241, 0.12);
+  box-shadow: 0 0 15px rgba(99, 102, 241, 0.2);
+}
+
+.step-card.completed {
+  border-color: var(--accent-emerald);
+  background: rgba(16, 185, 129, 0.08);
+}
+
+.step-number-badge {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--bg-tertiary);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.step-card.active .step-number-badge {
+  background: var(--accent-primary);
+}
+.step-card.completed .step-number-badge {
+  background: var(--accent-emerald);
+}
+
+.sim-input-group {
+  display: flex;
+  gap: 12px;
+  margin-top: 14px;
+}
+
+.sim-input {
+  flex-grow: 1;
+  background: #070d1e;
+  border: 1px solid var(--border-glow);
+  color: #fff;
+  font-size: 15px;
+  padding: 10px 14px;
+  border-radius: var(--radius-sm);
+  outline: none;
+  font-family: inherit;
+}
+.sim-input:focus {
+  border-color: var(--accent-cyan);
+  box-shadow: 0 0 10px rgba(6, 182, 212, 0.3);
+}
+
+.hint-box {
+  background: rgba(245, 158, 11, 0.1);
+  border-left: 3px solid var(--accent-amber);
+  padding: 12px;
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  margin-top: 12px;
+  font-size: 13px;
+  color: #fde68a;
+  display: none;
+}
+.hint-box.show {
+  display: block;
+}
+
+@media (max-width: 900px) {
+  .mission-workspace {
+    grid-template-columns: 1fr;
+  }
+}

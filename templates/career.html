@@ -1,0 +1,268 @@
+{% extends "base.html" %}
+
+{% block title %}Career Pathways Exploration — AdaptiveLearn AI{% endblock %}
+
+{% block content %}
+<div class="content-header fade-in">
+  <div>
+    <h1 class="page-title">Career Exploration & Pathways</h1>
+    <p class="page-subtitle">Discover potential academic & vocational pathways aligned with your demonstrated competencies, subject mastery, and learning interest profile.</p>
+  </div>
+  <div class="header-actions">
+    <button class="btn btn-secondary" id="btn-refresh-pathways">🔄 Re-evaluate Pathways</button>
+  </div>
+</div>
+
+<!-- Ethical & Non-deterministic Disclaimer -->
+<div class="notice-card fade-in" style="background: rgba(30, 41, 59, 0.7); border-left: 4px solid var(--accent-blue); padding: 1rem 1.25rem; border-radius: var(--radius-md); margin-bottom: 2rem;">
+  <div style="display: flex; gap: 0.75rem; align-items: flex-start;">
+    <span style="font-size: 1.5rem;">🧭</span>
+    <div>
+      <h4 style="font-size: 0.95rem; font-weight: 600; color: var(--text-primary); margin-bottom: 0.25rem;">Ethical Guidance Note</h4>
+      <p style="font-size: 0.85rem; color: var(--text-secondary); margin: 0;">
+        These recommendations highlight <strong>possible pathways to explore</strong> based on your current study level, interests, and demonstrated skills. 
+        AdaptiveLearn AI does <strong>not</strong> claim to predict a student's future or pigeonhole potential. Interests evolve as you learn!
+      </p>
+    </div>
+  </div>
+</div>
+
+<!-- Student Profile Signals Banner -->
+<div class="glass-card fade-in" style="padding: 1.5rem; margin-bottom: 2rem;">
+  <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+    <div>
+      <span style="font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted);">Signals Considered</span>
+      <h3 style="font-size: 1.15rem; margin-top: 0.25rem;" id="student-signal-summary">Grade 10 • Mathematics & Science • High Biology Interest</h3>
+    </div>
+    <div style="display: flex; gap: 0.75rem; flex-wrap: wrap;" id="signal-badges">
+      <span class="badge badge-blue">Academic Level</span>
+      <span class="badge badge-purple">Interest Graph</span>
+      <span class="badge badge-green">Demonstrated Mastery</span>
+      <span class="badge badge-warning">Skill Missions</span>
+    </div>
+  </div>
+</div>
+
+<!-- Pathways Grid -->
+<div id="pathways-container" class="dashboard-grid fade-in" style="grid-template-columns: repeat(auto-fit, minmax(360px, 1fr)); gap: 1.5rem;">
+  <!-- Rendered via JS -->
+  <div class="glass-card" style="padding: 2rem; text-align: center; grid-column: 1 / -1; color: var(--text-muted);">
+    <div class="spinner" style="margin: 0 auto 1rem auto;"></div>
+    Loading personalized career exploration pathways...
+  </div>
+</div>
+
+<!-- Pathway Detail Modal -->
+<div id="pathway-modal" class="modal-backdrop" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 1000; align-items: center; justify-content: center; padding: 1.5rem;">
+  <div class="glass-card" style="max-width: 650px; width: 100%; max-height: 90vh; overflow-y: auto; padding: 2rem; position: relative;">
+    <button id="modal-close" style="position: absolute; top: 1rem; right: 1rem; background: none; border: none; font-size: 1.5rem; color: var(--text-muted); cursor: pointer;">&times;</button>
+    <div id="modal-content">
+      <!-- Injected by JS -->
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', async () => {
+  const container = document.getElementById('pathways-container');
+  const modal = document.getElementById('pathway-modal');
+  const modalContent = document.getElementById('modal-content');
+  const modalClose = document.getElementById('modal-close');
+
+  modalClose.addEventListener('click', () => modal.style.display = 'none');
+  modal.addEventListener('click', (e) => {
+    if (e.target === modal) modal.style.display = 'none';
+  });
+
+  async function loadPathways() {
+    try {
+      const res = await API.get('/api/career/recommendations');
+      if (res && res.status === 'success' && res.pathways) {
+        renderPathways(res.pathways, res.student_profile);
+      } else {
+        renderFallbackPathways();
+      }
+    } catch (err) {
+      console.warn("Failed fetching career pathways, using fallback:", err);
+      renderFallbackPathways();
+    }
+  }
+
+  function renderPathways(pathways, profile) {
+    if (profile) {
+      document.getElementById('student-signal-summary').innerText = 
+        `${profile.level || 'Secondary'} • Stream: ${profile.stream || 'General'} • Top Interest: ${profile.top_interest || 'Science & Tech'}`;
+    }
+
+    if (!pathways || pathways.length === 0) {
+      renderFallbackPathways();
+      return;
+    }
+
+    container.innerHTML = pathways.map((p, idx) => `
+      <div class="glass-card hover-glow" style="padding: 1.5rem; display: flex; flex-direction: column; justify-content: space-between;">
+        <div>
+          <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.75rem;">
+            <span class="badge ${getCategoryBadge(p.category)}">${p.category || 'Academic Pathway'}</span>
+            <span style="font-size: 0.85rem; font-weight: 600; color: var(--accent-green); background: rgba(16,185,129,0.15); padding: 0.2rem 0.6rem; border-radius: 999px;">
+              ${p.match_score ? p.match_score + '% Alignment' : 'Recommended'}
+            </span>
+          </div>
+          <h3 style="font-size: 1.25rem; font-weight: 700; margin-bottom: 0.5rem; color: var(--text-primary);">${p.title}</h3>
+          <p style="font-size: 0.9rem; color: var(--text-secondary); line-height: 1.5; margin-bottom: 1.25rem;">
+            ${p.description}
+          </p>
+
+          <div style="margin-bottom: 1rem;">
+            <div style="font-size: 0.8rem; font-weight: 600; text-transform: uppercase; color: var(--text-muted); margin-bottom: 0.4rem;">
+              Required Subjects & Concepts
+            </div>
+            <div style="display: flex; gap: 0.4rem; flex-wrap: wrap;">
+              ${(p.required_subjects || ['Mathematics', 'Science']).map(s => `
+                <span style="background: rgba(255,255,255,0.06); padding: 0.25rem 0.6rem; border-radius: 4px; font-size: 0.8rem; color: var(--text-secondary); border: 1px solid var(--border-color);">
+                  ${s}
+                </span>
+              `).join('')}
+            </div>
+          </div>
+
+          <div style="margin-bottom: 1.25rem;">
+            <div style="font-size: 0.8rem; font-weight: 600; text-transform: uppercase; color: var(--text-muted); margin-bottom: 0.4rem;">
+              Suggested Key Skills
+            </div>
+            <div style="display: flex; gap: 0.4rem; flex-wrap: wrap;">
+              ${(p.suggested_skills || ['Critical Thinking', 'Problem Solving']).map(sk => `
+                <span style="background: rgba(59,130,246,0.1); color: var(--accent-blue); padding: 0.2rem 0.5rem; border-radius: 4px; font-size: 0.75rem;">
+                  ✦ ${sk}
+                </span>
+              `).join('')}
+            </div>
+          </div>
+        </div>
+
+        <div style="border-top: 1px solid var(--border-color); padding-top: 1rem; display: flex; justify-content: space-between; align-items: center;">
+          <span style="font-size: 0.8rem; color: var(--text-muted);">
+            ${p.recommended_missions ? p.recommended_missions.length + ' Linked Missions' : '2 Relevant Missions'}
+          </span>
+          <button class="btn btn-sm btn-primary" onclick="window.showPathwayDetail(${idx})">Explore Pathway &rarr;</button>
+        </div>
+      </div>
+    `).join('');
+
+    window.pathwayData = pathways;
+  }
+
+  function getCategoryBadge(cat) {
+    if (!cat) return 'badge-blue';
+    const c = cat.toLowerCase();
+    if (c.includes('science') || c.includes('bio')) return 'badge-green';
+    if (c.includes('tech') || c.includes('comp') || c.includes('robot')) return 'badge-purple';
+    if (c.includes('commerce') || c.includes('data')) return 'badge-warning';
+    return 'badge-blue';
+  }
+
+  window.showPathwayDetail = function(idx) {
+    const p = window.pathwayData[idx];
+    if (!p) return;
+
+    modalContent.innerHTML = `
+      <div style="margin-bottom: 1.5rem;">
+        <span class="badge ${getCategoryBadge(p.category)}">${p.category}</span>
+        <h2 style="font-size: 1.5rem; font-weight: 700; margin-top: 0.5rem; color: var(--text-primary);">${p.title}</h2>
+        <p style="color: var(--text-secondary); margin-top: 0.5rem; line-height: 1.6;">${p.description}</p>
+      </div>
+
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.5rem;">
+        <div style="background: rgba(255,255,255,0.03); border: 1px solid var(--border-color); padding: 1rem; border-radius: var(--radius-md);">
+          <h4 style="font-size: 0.85rem; color: var(--text-muted); text-transform: uppercase;">Next Education Stage</h4>
+          <p style="font-weight: 600; color: var(--accent-blue); margin-top: 0.25rem;">${p.next_stage || 'PUC Science / Diploma Engineering'}</p>
+        </div>
+        <div style="background: rgba(255,255,255,0.03); border: 1px solid var(--border-color); padding: 1rem; border-radius: var(--radius-md);">
+          <h4 style="font-size: 0.85rem; color: var(--text-muted); text-transform: uppercase;">Alignment Basis</h4>
+          <p style="font-weight: 600; color: var(--accent-green); margin-top: 0.25rem;">Interest Profile & Concept Demonstration</p>
+        </div>
+      </div>
+
+      <div style="margin-bottom: 1.5rem;">
+        <h3 style="font-size: 1rem; margin-bottom: 0.75rem; color: var(--text-primary);">Recommended Learning Missions</h3>
+        <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+          ${(p.recommended_missions || [
+            { id: 1, title: 'Build a Sustainable Ecosystem', subject: 'Science / Ecology' },
+            { id: 2, title: 'Save the Space Station', subject: 'Mathematics / Navigation' }
+          ]).map(m => `
+            <div style="display: flex; justify-content: space-between; align-items: center; background: rgba(30,41,59,0.5); padding: 0.75rem 1rem; border-radius: var(--radius-sm); border: 1px solid var(--border-color);">
+              <div>
+                <strong style="color: var(--text-primary); font-size: 0.9rem;">${m.title}</strong>
+                <div style="font-size: 0.75rem; color: var(--text-muted);">${m.subject}</div>
+              </div>
+              <a href="/missions/${m.id || 1}" class="btn btn-sm btn-secondary">Start Mission</a>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+
+      <div style="margin-bottom: 1.5rem;">
+        <h3 style="font-size: 1rem; margin-bottom: 0.75rem; color: var(--text-primary);">Curated Educational Playlists</h3>
+        <div style="background: rgba(59,130,246,0.05); border: 1px solid rgba(59,130,246,0.2); padding: 1rem; border-radius: var(--radius-sm);">
+          <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 0.75rem;">
+            Verified video resources exploring real-world applications of this field:
+          </p>
+          <a href="/videos" class="btn btn-sm btn-primary">Browse Curated YouTube Courses</a>
+        </div>
+      </div>
+
+      <div style="text-align: right; margin-top: 1.5rem;">
+        <button class="btn btn-secondary" onclick="document.getElementById('pathway-modal').style.display='none'">Close</button>
+      </div>
+    `;
+
+    modal.style.display = 'flex';
+  };
+
+  function renderFallbackPathways() {
+    const fallbacks = [
+      {
+        title: "Ecology, Biotechnology & Environmental Science",
+        category: "Biological Sciences",
+        match_score: 92,
+        description: "Explore biological ecosystems, cellular genetics, sustainable agriculture, and ecological preservation. Builds directly upon Grade 10/PUC Biology concepts.",
+        required_subjects: ["Biology", "Chemistry", "Mathematics"],
+        suggested_skills: ["Data Observation", "Hypothesis Testing", "Bioethics"],
+        next_stage: "PUC Science (PCMB) / BSc Biotechnology",
+        recommended_missions: [{ id: 2, title: "Build a Sustainable Ecosystem", subject: "Science" }]
+      },
+      {
+        title: "Robotics, Embedded Systems & Automation",
+        category: "Computer Science & Engineering",
+        match_score: 85,
+        description: "Merge programming logic with physical electronics. Design automated hardware controllers, sensors, and intelligent algorithms.",
+        required_subjects: ["Programming", "Electronics", "Physics"],
+        suggested_skills: ["Algorithmic Logic", "Circuit Design", "Debugging"],
+        next_stage: "Diploma in Electronics / Computer Science",
+        recommended_missions: [{ id: 3, title: "Repair the Robot", subject: "Computer Science" }]
+      },
+      {
+        title: "Aerospace Systems & Applied Physics",
+        category: "Physical Sciences",
+        match_score: 78,
+        description: "Investigate mechanics, orbital kinematics, telemetry, and propulsion systems using rigorous mathematical models.",
+        required_subjects: ["Physics", "Algebra", "Vectors"],
+        suggested_skills: ["Kinematic Analysis", "Coordinate Geometry", "Calculus"],
+        next_stage: "PUC Science (PCM) / Aeronautical Engineering",
+        recommended_missions: [{ id: 4, title: "Land the Spacecraft", subject: "Physics" }]
+      }
+    ];
+    renderPathways(fallbacks, { level: 'Grade 10', stream: 'Science', top_interest: 'Biology & Robotics' });
+  }
+
+  document.getElementById('btn-refresh-pathways').addEventListener('click', () => {
+    container.innerHTML = `<div class="glass-card" style="padding: 2rem; text-align: center; grid-column: 1 / -1;"><div class="spinner" style="margin: 0 auto 1rem auto;"></div>Re-evaluating signals and pathways...</div>`;
+    setTimeout(loadPathways, 600);
+  });
+
+  loadPathways();
+});
+</script>
+{% endblock %}

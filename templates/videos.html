@@ -1,0 +1,456 @@
+{% extends "base.html" %}
+
+{% block title %}YouTube Educational Library - AdaptiveLearn AI{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <h1 class="page-title">🎥 YouTube Educational Resources & Playlists</h1>
+  <p class="page-subtitle">
+    Verified educational content mapped to syllabus concepts and student interests.
+    <br><span style="font-size:12px; color:var(--accent-cyan); font-weight:600;">* Video engagement informs your interest profile, but academic mastery requires verified problem-solving.</span>
+  </p>
+</div>
+
+<!-- User-Provided Educational Resources Spotlight -->
+<div class="glass-card highlight" style="margin-bottom: 28px;">
+  <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; flex-wrap:wrap; gap:8px;">
+    <div style="font-size:11px; text-transform:uppercase; color:var(--accent-cyan); font-weight:800; letter-spacing:0.08em;">
+      ⭐ User-Provided Initial Educational Resources & Curated Stream Guidance
+    </div>
+    <span class="badge badge-practice" style="font-size:11px;">5 Verified Resources</span>
+  </div>
+  
+  <div class="grid-3" style="gap:16px;">
+    <!-- Video 1: 10th Standard College Stream Choice (BeerBiceps) -->
+    <div style="background:rgba(255,255,255,0.03); border:1px solid var(--border-subtle); border-radius:14px; padding:16px; display:flex; flex-direction:column; justify-content:space-between;">
+      <div>
+        <div style="position:relative; height:120px; border-radius:10px; overflow:hidden; background:#000; margin-bottom:12px; background-size:cover; background-position:center; background-image:url('https://i.ytimg.com/vi/ueEOngDY268/hqdefault.jpg');">
+          <span style="position:absolute; bottom:6px; right:6px; background:rgba(0,0,0,0.8); color:#fff; font-size:10px; padding:2px 6px; border-radius:4px; font-weight:700;">12:00</span>
+        </div>
+        <span class="badge badge-practice" style="margin-bottom:8px; font-size:10px;">User Resource • Stream Selection</span>
+        <h4 style="font-size:14px; color:#fff; margin-bottom:6px; line-height:1.3;">Which Stream/Career To Choose In College</h4>
+        <p style="font-size:12px; color:#94a3b8; margin-bottom:8px; line-height:1.4;">
+          Channel: <strong style="color:#cbd5e1;">BeerBiceps</strong> • Guidance for 10th std on Science vs Commerce vs Arts.
+        </p>
+        <div style="font-size:11px; color:#38bdf8; margin-bottom:12px;">Video ID: <code>ueEOngDY268</code></div>
+      </div>
+      <button class="btn btn-cyan btn-sm" style="width:100%;" onclick="openVideoModal('ueEOngDY268', 'Every 10th Standard Student Must Know This | Which Stream/Career To Choose In College', false)">
+        Watch Video Embed 🎥
+      </button>
+    </div>
+
+    <!-- Video 2: What is Commerce (The Commerce Company) -->
+    <div style="background:rgba(255,255,255,0.03); border:1px solid var(--border-subtle); border-radius:14px; padding:16px; display:flex; flex-direction:column; justify-content:space-between;">
+      <div>
+        <div style="position:relative; height:120px; border-radius:10px; overflow:hidden; background:#000; margin-bottom:12px; background-size:cover; background-position:center; background-image:url('https://i.ytimg.com/vi/gr57GG6Sb3Y/hqdefault.jpg');">
+          <span style="position:absolute; bottom:6px; right:6px; background:rgba(0,0,0,0.8); color:#fff; font-size:10px; padding:2px 6px; border-radius:4px; font-weight:700;">8:00</span>
+        </div>
+        <span class="badge badge-learning" style="margin-bottom:8px; font-size:10px;">User Resource • Commerce Stream</span>
+        <h4 style="font-size:14px; color:#fff; margin-bottom:6px; line-height:1.3;">What is Commerce ? | Why to choose Commerce as stream ?</h4>
+        <p style="font-size:12px; color:#94a3b8; margin-bottom:8px; line-height:1.4;">
+          Channel: <strong style="color:#cbd5e1;">The Commerce Company</strong> • Expectations, Accountancy, Economics & Career.
+        </p>
+        <div style="font-size:11px; color:#38bdf8; margin-bottom:12px;">Video ID: <code>gr57GG6Sb3Y</code></div>
+      </div>
+      <button class="btn btn-cyan btn-sm" style="width:100%;" onclick="openVideoModal('gr57GG6Sb3Y', 'What is Commerce ? | Why to choose Commerce as stream ? | what to expect in Commerce ?', false)">
+        Watch Video Embed 🎥
+      </button>
+    </div>
+
+    <!-- Video 3: Best Courses After 12th Arts (Prabhat Exam) -->
+    <div style="background:rgba(255,255,255,0.03); border:1px solid var(--border-subtle); border-radius:14px; padding:16px; display:flex; flex-direction:column; justify-content:space-between;">
+      <div>
+        <div style="position:relative; height:120px; border-radius:10px; overflow:hidden; background:#000; margin-bottom:12px; background-size:cover; background-position:center; background-image:url('https://i.ytimg.com/vi/-_uMdKIgdHQ/hqdefault.jpg');">
+          <span style="position:absolute; bottom:6px; right:6px; background:rgba(0,0,0,0.8); color:#fff; font-size:10px; padding:2px 6px; border-radius:4px; font-weight:700;">10:00</span>
+        </div>
+        <span class="badge badge-mastered" style="margin-bottom:8px; font-size:10px;">User Resource • Higher Secondary</span>
+        <h4 style="font-size:14px; color:#fff; margin-bottom:6px; line-height:1.3;">Best Courses After 12th for Arts | High Salary Courses</h4>
+        <p style="font-size:12px; color:#94a3b8; margin-bottom:8px; line-height:1.4;">
+          Channel: <strong style="color:#cbd5e1;">Prabhat Exam</strong> • Top degrees, Civil Services, Law & High-Growth Careers.
+        </p>
+        <div style="font-size:11px; color:#38bdf8; margin-bottom:12px;">Video ID: <code>-_uMdKIgdHQ</code></div>
+      </div>
+      <button class="btn btn-cyan btn-sm" style="width:100%;" onclick="openVideoModal('-_uMdKIgdHQ', 'Best Courses After 12th for Arts | High Salary Courses | Best Career Options', false)">
+        Watch Video Embed 🎥
+      </button>
+    </div>
+
+    <!-- Video 4: Science & Biology Playlist (PLDxx7_Hz1sj8) -->
+    <div style="background:rgba(255,255,255,0.03); border:1px solid var(--border-subtle); border-radius:14px; padding:16px; display:flex; flex-direction:column; justify-content:space-between;">
+      <div>
+        <div style="position:relative; height:120px; border-radius:10px; overflow:hidden; background:#000; margin-bottom:12px; background-size:cover; background-position:center; background-image:url('https://images.unsplash.com/photo-1532094349884-543bc11b234d?auto=format&fit=crop&w=600&q=80');">
+          <span style="position:absolute; bottom:6px; right:6px; background:rgba(0,0,0,0.8); color:#fff; font-size:10px; padding:2px 6px; border-radius:4px; font-weight:700;">PLAYLIST</span>
+        </div>
+        <span class="badge badge-practice" style="margin-bottom:8px; font-size:10px;">User Playlist • Science & Biology</span>
+        <h4 style="font-size:14px; color:#fff; margin-bottom:6px; line-height:1.3;">Biology, Science & Career Guidance</h4>
+        <p style="font-size:12px; color:#94a3b8; margin-bottom:8px; line-height:1.4;">
+          Playlist ID: <code style="color:#38bdf8;">PLDxx7_Hz1sj8</code> • Mapped to Grade 10 Science & Ecosystem Dynamics.
+        </p>
+      </div>
+      <button class="btn btn-secondary btn-sm" style="width:100%;" onclick="openVideoModal('PLDxx7_Hz1sj8', 'Biology & Science Career Explorations', true)">
+        Watch Playlist Embed 📂
+      </button>
+    </div>
+
+    <!-- Video 5: Mathematics Deep Dive (B57XEiiWxgY) -->
+    <div style="background:rgba(255,255,255,0.03); border:1px solid var(--border-subtle); border-radius:14px; padding:16px; display:flex; flex-direction:column; justify-content:space-between;">
+      <div>
+        <div style="position:relative; height:120px; border-radius:10px; overflow:hidden; background:#000; margin-bottom:12px; background-size:cover; background-position:center; background-image:url('https://images.unsplash.com/photo-1509228468518-180dd4864904?auto=format&fit=crop&w=600&q=80');">
+          <span style="position:absolute; bottom:6px; right:6px; background:rgba(0,0,0,0.8); color:#fff; font-size:10px; padding:2px 6px; border-radius:4px; font-weight:700;">10:00</span>
+        </div>
+        <span class="badge badge-mastered" style="margin-bottom:8px; font-size:10px;">User Resource • Mathematics</span>
+        <h4 style="font-size:14px; color:#fff; margin-bottom:6px; line-height:1.3;">Mathematics Deep Dive: Statistics</h4>
+        <p style="font-size:12px; color:#94a3b8; margin-bottom:8px; line-height:1.4;">
+          Video ID: <code style="color:#38bdf8;">B57XEiiWxgY</code> • Mapped to Statistics STAT-04 & Variance derivations.
+        </p>
+      </div>
+      <button class="btn btn-secondary btn-sm" style="width:100%;" onclick="openVideoModal('B57XEiiWxgY', 'Mathematics Deep Dive: Statistics', false)">
+        Watch Video Embed 🎥
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- 📱 Short Educational Video Feed Spotlight (9 Shorts) -->
+<div class="glass-card highlight" style="margin-bottom: 28px; border: 1px solid rgba(56, 189, 248, 0.4); background: rgba(56, 189, 248, 0.03);">
+  <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px; flex-wrap:wrap; gap:12px;">
+    <div>
+      <div style="font-size:11px; text-transform:uppercase; color:var(--accent-cyan); font-weight:800; letter-spacing:0.08em; margin-bottom:4px;">
+        📱 Short Educational Video Feed
+      </div>
+      <h3 style="font-size:18px; margin:0; color:#fff;">Fast-Paced Conceptual Breakdowns</h3>
+      <p style="font-size:12px; color:#cbd5e1; margin-top:4px; line-height:1.4;">
+        Watch, pause, replay, or learn more.
+        <br><span style="color:var(--accent-cyan); font-weight:600;">* Video engagement informs your Learning Interest Profile, but does NOT grant automatic mastery.</span>
+      </p>
+    </div>
+    <a href="/short-feed" class="btn btn-cyan btn-sm" style="display:inline-flex; align-items:center; gap:6px;">
+      Open Full Reels Player 📱 &rarr;
+    </a>
+  </div>
+  
+  <div class="grid-3" id="shorts-spotlight-grid" style="gap:16px;">
+    <!-- Injected dynamically via loadShortsSpotlight() -->
+  </div>
+</div>
+
+<!-- Curated Educational Playlists Section -->
+<div class="glass-card" style="margin-bottom: 28px;">
+  <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; flex-wrap:wrap; gap:12px;">
+    <div>
+      <h3 style="font-size:18px; margin-bottom:4px;">Curated Educational Playlists</h3>
+      <p style="font-size:13px; color:#94a3b8;">
+        Verified educational content mapped to syllabus concepts and student interests.
+      </p>
+    </div>
+    <div style="display:flex; gap:8px;" id="playlist-filter-tabs">
+      <button class="btn btn-cyan btn-sm" onclick="filterPlaylists('all')">All Playlists (5)</button>
+      <button class="btn btn-secondary btn-sm" onclick="filterPlaylists('career')">Career & Streams</button>
+      <button class="btn btn-secondary btn-sm" onclick="filterPlaylists('stem')">STEM & Foundations</button>
+    </div>
+  </div>
+
+  <div class="grid-3" id="all-playlists-grid">
+    <!-- Injected via JavaScript -->
+  </div>
+</div>
+
+<!-- Curated Educational Videos in Curated Playlists -->
+<div class="glass-card" style="margin-bottom: 28px;">
+  <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; flex-wrap:wrap; gap:12px;">
+    <div>
+      <h3 style="font-size:18px; margin-bottom:4px;">Curated Educational Video Modules</h3>
+      <p style="font-size:13px; color:#94a3b8;">
+        Directly access high-impact lessons from our curated educational library.
+      </p>
+    </div>
+    <span class="badge badge-practice" style="font-size:11px;">Verified Video Catalog</span>
+  </div>
+
+  <div class="grid-3" id="curated-videos-grid">
+    <!-- Injected via JavaScript from /api/youtube/curated-videos -->
+  </div>
+</div>
+
+<!-- Video Player Modal -->
+<div id="video-modal" class="modal-overlay">
+  <div class="modal-card" style="max-width: 860px; padding: 24px;">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+      <div>
+        <h3 id="modal-video-title" style="font-size:18px; color:#fff;">Educational Player</h3>
+        <div id="modal-video-subtitle" style="font-size:12px; color:var(--accent-cyan); margin-top:2px;"></div>
+      </div>
+      <button class="btn btn-secondary btn-sm" onclick="closeVideoModal()">✕</button>
+    </div>
+
+    <div style="position:relative; padding-bottom:56.25%; height:0; overflow:hidden; border-radius:12px; background:#000; margin-bottom:16px; box-shadow:0 10px 25px rgba(0,0,0,0.5);">
+      <iframe id="video-iframe" style="position:absolute; top:0; left:0; width:100%; height:100%; border:0;" 
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+              referrerpolicy="strict-origin-when-cross-origin"
+              allowfullscreen>
+      </iframe>
+    </div>
+
+    <!-- Playlist videos drawer inside modal (if playlist selected) -->
+    <div id="modal-playlist-drawer" style="display:none; margin-bottom:16px; background:rgba(255,255,255,0.03); border:1px solid var(--border-subtle); border-radius:10px; padding:12px;">
+      <div style="font-size:11px; text-transform:uppercase; color:#94a3b8; font-weight:700; margin-bottom:8px;">
+        Playlist Videos:
+      </div>
+      <div id="modal-playlist-items" style="display:flex; gap:8px; overflow-x:auto; padding-bottom:4px;">
+        <!-- Injected dynamically -->
+      </div>
+    </div>
+
+    <div style="display:flex; justify-content:space-between; align-items:center; font-size:13px; color:#94a3b8; flex-wrap:wrap; gap:12px;">
+      <span>Engagement signal logged to your Learning Interest Profile.</span>
+      <button class="btn btn-primary btn-sm" onclick="recordWatched()">I Finished Watching 🎯</button>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+let currentVideoId = null;
+let allPlaylists = [];
+
+document.addEventListener("DOMContentLoaded", async () => {
+  await loadShortsSpotlight();
+  await loadPlaylists();
+  await loadCuratedVideos();
+});
+
+async function loadPlaylists() {
+  const grid = document.getElementById("all-playlists-grid");
+  try {
+    const data = await API.getPlaylists();
+    allPlaylists = data.playlists || [];
+    renderPlaylists(allPlaylists);
+  } catch (err) {
+    grid.innerHTML = `<div style="color:#ef4444;">Error loading playlists: ${err.message}</div>`;
+  }
+}
+
+function renderPlaylists(playlists) {
+  const grid = document.getElementById("all-playlists-grid");
+  if (!playlists || playlists.length === 0) {
+    grid.innerHTML = `<div style="color:#94a3b8;">No playlists found.</div>`;
+    return;
+  }
+
+  grid.innerHTML = playlists.map(p => {
+    const isCareerStream = p.playlist_id === 'PL_CAREER_STREAMS';
+    const thumb = p.thumbnail_url || (isCareerStream ? 'https://i.ytimg.com/vi/ueEOngDY268/hqdefault.jpg' : 'https://images.unsplash.com/photo-1532094349884-543bc11b234d?auto=format&fit=crop&w=600&q=80');
+    const badgeText = p.is_user_provided ? 'User-Requested Resource' : 'Verified Resource';
+    const videoCount = isCareerStream ? '3 Verified Videos' : 'Curated Series';
+
+    return `
+      <div class="glass-card" style="padding:18px; display:flex; flex-direction:column; justify-content:space-between; ${isCareerStream ? 'border:1px solid rgba(56,189,248,0.3); background:rgba(56,189,248,0.03);' : ''}">
+        <div>
+          <div style="position:relative; height:140px; border-radius:10px; background-size:cover; background-position:center; margin-bottom:12px; background-image:url('${thumb}');">
+            <span style="position:absolute; bottom:6px; right:6px; background:rgba(0,0,0,0.8); color:#fff; font-size:10px; padding:2px 8px; border-radius:4px; font-weight:700;">
+              ${videoCount}
+            </span>
+          </div>
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+            <span class="badge ${p.is_user_provided ? 'badge-practice' : 'badge-learning'}" style="font-size:10px;">
+              ${badgeText}
+            </span>
+            <span style="font-size:11px; color:#94a3b8;">${p.channel_name || 'Educational Channel'}</span>
+          </div>
+          <h4 style="font-size:15px; color:#fff; margin-bottom:8px; line-height:1.3;">${p.title}</h4>
+          <p style="font-size:12px; color:#94a3b8; line-height:1.5; margin-bottom:12px;">${p.description || 'Educational walkthrough playlist.'}</p>
+        </div>
+        
+        <div style="display:flex; gap:8px; margin-top:8px;">
+          <button class="btn btn-secondary btn-sm" style="flex:1;" 
+                  onclick="openPlaylistExplorer(${p.id}, '${p.playlist_id}', '${p.title.replace(/'/g, "\\'")}')">
+            Explore Videos 📂
+          </button>
+          <button class="btn btn-cyan btn-sm" style="flex:1;" 
+                  onclick="openVideoModal('${p.playlist_id}', '${p.title.replace(/'/g, "\\'")}', true, ${p.id})">
+            Watch Embed 🎥
+          </button>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function filterPlaylists(type) {
+  const buttons = document.querySelectorAll("#playlist-filter-tabs button");
+  buttons.forEach(b => b.className = "btn btn-secondary btn-sm");
+  
+  if (type === 'all') {
+    event.target.className = "btn btn-cyan btn-sm";
+    renderPlaylists(allPlaylists);
+  } else if (type === 'career') {
+    event.target.className = "btn btn-cyan btn-sm";
+    renderPlaylists(allPlaylists.filter(p => p.playlist_id === 'PL_CAREER_STREAMS' || p.playlist_id === 'PLDxx7_Hz1sj8'));
+  } else if (type === 'stem') {
+    event.target.className = "btn btn-cyan btn-sm";
+    renderPlaylists(allPlaylists.filter(p => p.playlist_id !== 'PL_CAREER_STREAMS'));
+  }
+}
+
+async function loadShortsSpotlight() {
+  const grid = document.getElementById("shorts-spotlight-grid");
+  if (!grid) return;
+  try {
+    const data = await API.getShortFeed();
+    const shorts = data.feed || [];
+    if (shorts.length === 0) {
+      grid.innerHTML = `<div style="color:#94a3b8; grid-column:1/-1;">No shorts available currently.</div>`;
+      return;
+    }
+
+    grid.innerHTML = shorts.map((s, idx) => `
+      <div class="glass-card" style="padding:14px; display:flex; flex-direction:column; justify-content:space-between; background:rgba(255,255,255,0.02); border:1px solid rgba(255,255,255,0.08); border-radius:14px;">
+        <div>
+          <div style="position:relative; height:130px; border-radius:10px; background-size:cover; background-position:center; margin-bottom:10px; cursor:pointer; background-image:url('${s.thumbnail_url || 'https://i.ytimg.com/vi/' + s.video_id + '/hqdefault.jpg'}'); background-color:#000;"
+               onclick="openVideoModal('${s.video_id}', '${s.title.replace(/'/g, "\\'")}', false)">
+            <span style="position:absolute; top:6px; left:6px; background:rgba(0,0,0,0.8); color:#38bdf8; font-size:10px; padding:2px 6px; border-radius:4px; font-weight:800;">
+              Short #${idx + 1}
+            </span>
+            <span style="position:absolute; bottom:6px; right:6px; background:rgba(0,0,0,0.85); color:#fff; font-size:10px; padding:2px 6px; border-radius:4px; font-weight:700;">
+              ⏱️ ${s.duration_seconds || 60}s
+            </span>
+          </div>
+          <div style="display:flex; gap:6px; margin-bottom:6px; flex-wrap:wrap;">
+            <span class="badge badge-learning" style="font-size:10px;">${s.subject || 'Core'}</span>
+            <span class="badge badge-practice" style="font-size:10px;">${s.difficulty || 'MEDIUM'}</span>
+          </div>
+          <h4 style="font-size:13.5px; color:#fff; margin-bottom:4px; line-height:1.35; cursor:pointer;"
+              onclick="openVideoModal('${s.video_id}', '${s.title.replace(/'/g, "\\'")}', false)">${s.title}</h4>
+          <p style="font-size:11.5px; color:#94a3b8; margin-bottom:10px; line-height:1.4;">
+            Channel: <strong style="color:#cbd5e1;">${s.channel_name || 'Academic'}</strong>
+          </p>
+        </div>
+        <div style="display:flex; gap:8px; margin-top:6px;">
+          <button class="btn btn-cyan btn-sm" style="flex:1; font-size:11px;" 
+                  onclick="openVideoModal('${s.video_id}', '${s.title.replace(/'/g, "\\'")}', false)">
+            Watch Embed 🎥
+          </button>
+          <a href="/short-feed?v=${s.video_id}" 
+             class="btn btn-secondary btn-sm" style="font-size:11px; padding:6px 12px; display:inline-flex; align-items:center; gap:4px;" title="Open in On-Site Shorts Player">
+            📱 Reels
+          </a>
+        </div>
+      </div>
+    `).join('');
+  } catch (err) {
+    grid.innerHTML = `<div style="color:#ef4444; grid-column:1/-1;">Error loading shorts: ${err.message}</div>`;
+  }
+}
+
+async function loadCuratedVideos() {
+  const grid = document.getElementById("curated-videos-grid");
+  try {
+    const data = await API.getCuratedVideos();
+    const videos = data.curated_videos || [];
+    if (videos.length === 0) {
+      grid.innerHTML = `<div style="color:#94a3b8;">No videos available.</div>`;
+      return;
+    }
+
+    grid.innerHTML = videos.map(v => `
+      <div class="glass-card" style="padding:16px; display:flex; flex-direction:column; justify-content:space-between;">
+        <div>
+          <div style="position:relative; height:120px; border-radius:10px; background-size:cover; background-position:center; margin-bottom:12px; background-image:url('${v.thumbnail_url || 'https://images.unsplash.com/photo-1509228468518-180dd4864904?auto=format&fit=crop&w=600&q=80'}');">
+            <span style="position:absolute; bottom:6px; right:6px; background:rgba(0,0,0,0.8); color:#fff; font-size:10px; padding:2px 6px; border-radius:4px; font-weight:700;">
+              ${Math.floor((v.duration_seconds || 300) / 60)} mins
+            </span>
+          </div>
+          <span class="badge badge-learning" style="margin-bottom:8px; font-size:10px;">${v.subject || 'Educational Resource'}</span>
+          <h4 style="font-size:14px; color:#fff; margin-bottom:6px; line-height:1.3;">${v.title}</h4>
+          <p style="font-size:12px; color:#94a3b8; margin-bottom:12px; line-height:1.4;">${v.channel_name || 'Verified Channel'}</p>
+        </div>
+        <button class="btn btn-cyan btn-sm" style="width:100%;" 
+                onclick="openVideoModal('${v.video_id}', '${v.title.replace(/'/g, "\\'")}', false)">
+          Watch Video 🎥
+        </button>
+      </div>
+    `).join('');
+  } catch (err) {
+    grid.innerHTML = `<div style="color:#ef4444;">Error loading curated videos: ${err.message}</div>`;
+  }
+}
+
+async function openPlaylistExplorer(id, playlistCode, title) {
+  try {
+    const data = await API.getPlaylist(id);
+    const videos = data.videos || [];
+    
+    if (videos.length > 0) {
+      // Play the first video and show playlist items
+      openVideoModal(videos[0].video_id, videos[0].title, false);
+      
+      const drawer = document.getElementById("modal-playlist-drawer");
+      const itemsContainer = document.getElementById("modal-playlist-items");
+      drawer.style.display = "block";
+      
+      itemsContainer.innerHTML = videos.map((v, idx) => `
+        <button class="btn btn-secondary btn-sm" style="white-space:nowrap; font-size:11px; padding:6px 12px;"
+                onclick="switchModalVideo('${v.video_id}', '${v.title.replace(/'/g, "\\'")}')">
+          ${idx + 1}. ${v.title.length > 30 ? v.title.substring(0, 30) + '...' : v.title}
+        </button>
+      `).join('');
+    } else {
+      openVideoModal(playlistCode, title, true);
+    }
+  } catch (err) {
+    openVideoModal(playlistCode, title, true);
+  }
+}
+
+function switchModalVideo(videoId, title) {
+  currentVideoId = videoId;
+  document.getElementById("modal-video-title").textContent = title;
+  const iframe = document.getElementById("video-iframe");
+  iframe.src = `https://www.youtube.com/embed/${videoId}?autoplay=1`;
+  API.recordVideoProgress(1, 10, false, 0);
+}
+
+function openVideoModal(id, title, isPlaylist = false, dbPlaylistId = null) {
+  currentVideoId = id;
+  document.getElementById("modal-video-title").textContent = title;
+  document.getElementById("modal-video-subtitle").textContent = isPlaylist ? "Curated Playlist Series" : "Verified Educational Video";
+  document.getElementById("modal-playlist-drawer").style.display = "none";
+  
+  const iframe = document.getElementById("video-iframe");
+  
+  if (isPlaylist) {
+    if (dbPlaylistId) {
+      openPlaylistExplorer(dbPlaylistId, id, title);
+      return;
+    } else if (id === 'PL_CAREER_STREAMS') {
+      openPlaylistExplorer(5, 'PL_CAREER_STREAMS', 'Secondary & Higher Secondary Career Stream Guidance');
+      return;
+    } else {
+      const pl = (typeof allPlaylists !== 'undefined') && allPlaylists.find(p => p.playlist_id === id);
+      if (pl && pl.id) {
+        openPlaylistExplorer(pl.id, id, title);
+        return;
+      }
+      iframe.src = `https://www.youtube.com/embed/videoseries?list=${id}&playsinline=1`;
+    }
+  } else {
+    iframe.src = `https://www.youtube.com/embed/${id}?autoplay=1&playsinline=1`;
+  }
+
+  document.getElementById("video-modal").classList.add("active");
+  API.recordVideoProgress(1, 10, false, 0);
+}
+
+function closeVideoModal() {
+  document.getElementById("video-iframe").src = "";
+  document.getElementById("video-modal").classList.remove("active");
+}
+
+function recordWatched() {
+  showToast("Video watch completion recorded! Learning Interest Profile updated.");
+  API.recordVideoProgress(1, 60, true, 0);
+  closeVideoModal();
+}
+</script>
+{% endblock %}

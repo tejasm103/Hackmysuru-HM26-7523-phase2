@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block title %}Interactive Academic Mission — AdaptiveLearn AI{% endblock %}
+
+{% block content %}
+<div class="content-header fade-in" style="margin-bottom: 1.25rem;">
+  <div>
+    <a href="/missions" class="btn btn-secondary btn-sm" style="display: inline-flex; align-items: center; gap: 0.4rem; margin-bottom: 0.5rem;">
+      &larr; Back to Missions Catalog
+    </a>
+    <h1 class="page-title" style="font-size: 1.6rem; margin: 0;">Interactive Mission Execution</h1>
+  </div>
+</div>
+
+<div id="mission-app" class="fade-in" data-mission-id="{{ mission_id | default(1) }}"></div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="/static/js/mission-engine.js"></script>
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const container = document.getElementById("mission-app");
+  // Extract mission ID from path (e.g. /missions/1) or fallback to data attribute
+  const pathParts = window.location.pathname.split('/').filter(Boolean);
+  const lastPart = pathParts[pathParts.length - 1];
+  const urlId = (!isNaN(lastPart) && lastPart) ? parseInt(lastPart, 10) : null;
+  const missionId = urlId || parseInt(container?.dataset?.missionId || "1", 10);
+  
+  const engine = new MissionEngine(missionId, "mission-app");
+  engine.init();
+});
+</script>
+{% endblock %}

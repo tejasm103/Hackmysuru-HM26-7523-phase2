@@ -1,0 +1,337 @@
+{% extends "base.html" %}
+
+{% block title %}Viewed History & Learning Analytics — AdaptiveLearn AI{% endblock %}
+
+{% block content %}
+<div class="content-header fade-in">
+  <div>
+    <h1 class="page-title">Learning History & Video Analytics</h1>
+    <p class="page-subtitle">Track your video engagement signals, review previous learning sessions, and explore learning time analytics.</p>
+  </div>
+  <div class="header-actions">
+    <a href="/short-feed" class="btn btn-secondary">🎥 Short Feed</a>
+    <a href="/videos" class="btn btn-primary">📺 Course Videos</a>
+  </div>
+</div>
+
+<!-- Important Signal Notice -->
+<div class="notice-card fade-in" style="background: rgba(30, 41, 59, 0.7); border-left: 4px solid var(--accent-purple); padding: 1rem 1.25rem; border-radius: var(--radius-md); margin-bottom: 2rem;">
+  <div style="display: flex; gap: 0.75rem; align-items: flex-start;">
+    <span style="font-size: 1.5rem;">📊</span>
+    <div>
+      <h4 style="font-size: 0.95rem; font-weight: 600; color: var(--text-primary); margin-bottom: 0.25rem;">Pedagogical Signal Principle</h4>
+      <p style="font-size: 0.85rem; color: var(--text-secondary); margin: 0;">
+        Video engagement serves as a <strong>learning interest & exposure signal</strong>. Video completion <strong>never automatically equals academic mastery</strong>. True mastery is demonstrated through our interactive missions, practice exercises, and adaptive assessments.
+      </p>
+    </div>
+  </div>
+</div>
+
+<!-- Stats Row -->
+<div class="dashboard-grid fade-in" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); margin-bottom: 2rem;">
+  <div class="stat-card glass-panel">
+    <div class="stat-icon" style="background: rgba(59, 130, 246, 0.15); color: var(--accent-blue);">⏱️</div>
+    <div class="stat-info">
+      <div class="stat-value" id="stat-total-time">0m</div>
+      <div class="stat-label">Total Watch Time</div>
+    </div>
+  </div>
+  <div class="stat-card glass-panel">
+    <div class="stat-icon" style="background: rgba(16, 185, 129, 0.15); color: var(--accent-green);">✅</div>
+    <div class="stat-info">
+      <div class="stat-value" id="stat-completed-videos">0</div>
+      <div class="stat-label">Completed Videos</div>
+    </div>
+  </div>
+  <div class="stat-card glass-panel">
+    <div class="stat-icon" style="background: rgba(245, 158, 11, 0.15); color: var(--accent-yellow);">⏳</div>
+    <div class="stat-info">
+      <div class="stat-value" id="stat-in-progress">0</div>
+      <div class="stat-label">In-Progress Sessions</div>
+    </div>
+  </div>
+  <div class="stat-card glass-panel">
+    <div class="stat-icon" style="background: rgba(139, 92, 246, 0.15); color: var(--accent-purple);">🔄</div>
+    <div class="stat-info">
+      <div class="stat-value" id="stat-replays">0</div>
+      <div class="stat-label">Concept Replays</div>
+    </div>
+  </div>
+</div>
+
+<!-- Analytics Charts -->
+<div class="analytics-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(360px, 1fr)); gap: 1.5rem; margin-bottom: 2.5rem;">
+  <div class="glass-card" style="padding: 1.5rem;">
+    <h3 style="font-size: 1.1rem; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem;">
+      <span>📊</span> Course-Wise Viewing Distribution
+    </h3>
+    <div style="position: relative; height: 260px;">
+      <canvas id="courseDistributionChart"></canvas>
+    </div>
+  </div>
+  <div class="glass-card" style="padding: 1.5rem;">
+    <h3 style="font-size: 1.1rem; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem;">
+      <span>📈</span> Daily Learning & Engagement Trend
+    </h3>
+    <div style="position: relative; height: 260px;">
+      <canvas id="dailyActivityChart"></canvas>
+    </div>
+  </div>
+</div>
+
+<!-- History Listing with Filters -->
+<div class="glass-card" style="padding: 1.5rem;">
+  <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; margin-bottom: 1.5rem; border-bottom: 1px solid var(--border-color); padding-bottom: 1rem;">
+    <h2 style="font-size: 1.25rem; font-weight: 700;">Viewing History Records</h2>
+    
+    <!-- Filter Pills -->
+    <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;" id="category-filters">
+      <button class="filter-pill active" data-filter="all">All</button>
+      <button class="filter-pill" data-filter="Mathematics">Mathematics</button>
+      <button class="filter-pill" data-filter="Science">Science</button>
+      <button class="filter-pill" data-filter="Computer Science">Computer Science</button>
+      <button class="filter-pill" data-filter="Physics">Physics</button>
+    </div>
+  </div>
+
+  <div class="table-responsive">
+    <table class="data-table" style="width: 100%; border-collapse: collapse; text-align: left;">
+      <thead>
+        <tr style="border-bottom: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.85rem;">
+          <th style="padding: 0.75rem 1rem;">VIDEO / LESSON</th>
+          <th style="padding: 0.75rem 1rem;">COURSE & CONCEPT</th>
+          <th style="padding: 0.75rem 1rem;">DURATION & WATCHED</th>
+          <th style="padding: 0.75rem 1rem;">PROGRESS</th>
+          <th style="padding: 0.75rem 1rem;">REPLAYS</th>
+          <th style="padding: 0.75rem 1rem;">LAST WATCHED</th>
+          <th style="padding: 0.75rem 1rem; text-align: right;">ACTION</th>
+        </tr>
+      </thead>
+      <tbody id="history-table-body">
+        <tr>
+          <td colspan="7" style="text-align: center; padding: 2rem; color: var(--text-muted);">
+            Loading viewed history...
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', async () => {
+  let allRecords = [];
+  let courseChartInstance = null;
+  let dailyChartInstance = null;
+
+  async function loadHistory() {
+    try {
+      const res = await API.get('/api/student/viewed-history');
+      if (res && res.status === 'success') {
+        allRecords = res.history || [];
+        updateStats(res);
+        renderTable(allRecords);
+        renderCharts(res.analytics || {});
+      } else {
+        renderEmpty();
+      }
+    } catch (err) {
+      console.error("Failed to load history:", err);
+      renderEmpty();
+    }
+  }
+
+  function updateStats(data) {
+    const totalMinutes = Math.round((data.total_watch_seconds || 0) / 60);
+    document.getElementById('stat-total-time').innerText = totalMinutes + 'm';
+    document.getElementById('stat-completed-videos').innerText = data.completed_count || 0;
+    document.getElementById('stat-in-progress').innerText = data.in_progress_count || 0;
+    
+    let replays = 0;
+    allRecords.forEach(r => replays += (r.replay_count || 0));
+    document.getElementById('stat-replays').innerText = replays;
+  }
+
+  function renderTable(records) {
+    const tbody = document.getElementById('history-table-body');
+    if (!records || records.length === 0) {
+      tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; padding: 2rem; color: var(--text-muted);">No viewing history found matching filter.</td></tr>`;
+      return;
+    }
+
+    tbody.innerHTML = records.map(r => {
+      const percent = Math.min(100, Math.round((r.progress_seconds / (r.duration_seconds || 1)) * 100)) || (r.is_completed ? 100 : 0);
+      const isComplete = r.is_completed || percent >= 90;
+      const statusBadge = isComplete 
+        ? `<span class="badge badge-success">Completed</span>`
+        : `<span class="badge badge-warning">${percent}% Watched</span>`;
+
+      return `
+        <tr style="border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 0.9rem;">
+          <td style="padding: 1rem;">
+            <div style="display:flex; align-items: center; gap: 0.75rem;">
+              <div style="width: 44px; height: 32px; border-radius: 4px; background: rgba(59,130,246,0.2); display: flex; align-items:center; justify-content:center; font-size: 1.1rem; flex-shrink: 0;">
+                ▶️
+              </div>
+              <div>
+                <strong style="color: var(--text-primary); display:block; max-width: 280px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                  ${r.video_title || 'Educational Session'}
+                </strong>
+                <span style="font-size: 0.75rem; color: var(--text-muted);">${r.video_type || 'Short / Lecture'}</span>
+              </div>
+            </div>
+          </td>
+          <td style="padding: 1rem;">
+            <div>
+              <span class="badge badge-blue" style="font-size: 0.75rem;">${r.course_name || 'Academic'}</span>
+              <div style="font-size: 0.8rem; color: var(--text-secondary); margin-top: 4px;">${r.concept_name || 'General Concept'}</div>
+            </div>
+          </td>
+          <td style="padding: 1rem; color: var(--text-secondary);">
+            ${Math.round(r.progress_seconds || 0)}s / ${Math.round(r.duration_seconds || 0)}s
+          </td>
+          <td style="padding: 1rem; min-width: 140px;">
+            <div style="display:flex; align-items:center; gap: 0.5rem;">
+              <div class="progress-bar-container" style="flex: 1; height: 6px; background: rgba(255,255,255,0.1); border-radius: 3px; overflow: hidden;">
+                <div class="progress-bar-fill" style="width: ${percent}%; height: 100%; background: ${isComplete ? 'var(--accent-green)' : 'var(--accent-blue)'};"></div>
+              </div>
+              <span style="font-size: 0.75rem; color: var(--text-muted);">${percent}%</span>
+            </div>
+            <div style="margin-top: 4px;">${statusBadge}</div>
+          </td>
+          <td style="padding: 1rem; color: var(--text-secondary); text-align: center;">
+            ${r.replay_count > 0 ? `<span class="badge" style="background: rgba(139,92,246,0.2); color: var(--accent-purple);">${r.replay_count}x</span>` : '0'}
+          </td>
+          <td style="padding: 1rem; color: var(--text-muted); font-size: 0.8rem;">
+            ${r.last_watched_at ? new Date(r.last_watched_at).toLocaleDateString() : 'Recent'}
+          </td>
+          <td style="padding: 1rem; text-align: right;">
+            <a href="/videos?play=${r.video_id || ''}" class="btn btn-sm btn-secondary">Resume</a>
+          </td>
+        </tr>
+      `;
+    }).join('');
+  }
+
+  function renderEmpty() {
+    document.getElementById('history-table-body').innerHTML = `
+      <tr>
+        <td colspan="7" style="text-align: center; padding: 2rem; color: var(--text-muted);">
+          No history records yet. Start by watching short learning feeds or course videos!
+        </td>
+      </tr>
+    `;
+  }
+
+  function renderCharts(analytics) {
+    // Course distribution doughnut
+    const ctxCourse = document.getElementById('courseDistributionChart').getContext('2d');
+    const courses = analytics.course_breakdown || [
+      { name: 'Mathematics', minutes: 45 },
+      { name: 'Science', minutes: 30 },
+      { name: 'Computer Science', minutes: 25 },
+      { name: 'Physics', minutes: 15 }
+    ];
+
+    if (courseChartInstance) courseChartInstance.destroy();
+    courseChartInstance = new Chart(ctxCourse, {
+      type: 'doughnut',
+      data: {
+        labels: courses.map(c => c.name || c.course_name),
+        datasets: [{
+          data: courses.map(c => c.minutes || Math.round((c.seconds || 300) / 60)),
+          backgroundColor: ['#3b82f6', '#10b981', '#8b5cf6', '#f59e0b', '#ec4899'],
+          borderWidth: 0
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { position: 'bottom', labels: { color: '#94a3b8', font: { size: 11 } } }
+        },
+        cutout: '70%'
+      }
+    });
+
+    // Daily trend bar chart
+    const ctxDaily = document.getElementById('dailyActivityChart').getContext('2d');
+    const dailyData = analytics.daily_trend || [
+      { day: 'Mon', minutes: 20 },
+      { day: 'Tue', minutes: 35 },
+      { day: 'Wed', minutes: 15 },
+      { day: 'Thu', minutes: 40 },
+      { day: 'Fri', minutes: 50 },
+      { day: 'Sat', minutes: 65 },
+      { day: 'Sun', minutes: 30 }
+    ];
+
+    if (dailyChartInstance) dailyChartInstance.destroy();
+    dailyChartInstance = new Chart(ctxDaily, {
+      type: 'bar',
+      data: {
+        labels: dailyData.map(d => d.day || d.date),
+        datasets: [{
+          label: 'Minutes Studied',
+          data: dailyData.map(d => d.minutes),
+          backgroundColor: 'rgba(59, 130, 246, 0.7)',
+          borderRadius: 6
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+          x: { grid: { display: false }, ticks: { color: '#94a3b8' } },
+          y: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#94a3b8' } }
+        },
+        plugins: {
+          legend: { display: false }
+        }
+      }
+    });
+  }
+
+  // Filter Buttons
+  document.querySelectorAll('#category-filters .filter-pill').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('#category-filters .filter-pill').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      const filter = btn.dataset.filter;
+      if (filter === 'all') {
+        renderTable(allRecords);
+      } else {
+        const filtered = allRecords.filter(r => (r.course_name || '').toLowerCase().includes(filter.toLowerCase()));
+        renderTable(filtered);
+      }
+    });
+  });
+
+  loadHistory();
+});
+</script>
+<style>
+.filter-pill {
+  background: rgba(255,255,255,0.05);
+  border: 1px solid var(--border-color);
+  color: var(--text-secondary);
+  padding: 0.35rem 0.85rem;
+  border-radius: 999px;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+.filter-pill:hover {
+  background: rgba(255,255,255,0.1);
+  color: var(--text-primary);
+}
+.filter-pill.active {
+  background: var(--accent-blue);
+  color: #fff;
+  border-color: var(--accent-blue);
+}
+</style>
+{% endblock %}

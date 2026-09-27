@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}AdaptiveLearn AI - Personalized Learning Platform{% endblock %}</title>
+  
+  <!-- Modern Typography -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <!-- Core Stylesheets -->
+  <link rel="stylesheet" href="/static/css/main.css">
+  <link rel="stylesheet" href="/static/css/dashboard.css">
+  <link rel="stylesheet" href="/static/css/missions.css">
+  <link rel="stylesheet" href="/static/css/video-feed.css">
+  {% block extra_css %}{% endblock %}
+</head>
+<body>
+  <div class="app-container">
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar">
+      <div class="brand-header">
+        <div class="brand-icon">⚡</div>
+        <div>
+          <div class="brand-title">AdaptiveLearn</div>
+          <div class="brand-subtitle">AI & ML Engine</div>
+        </div>
+      </div>
+
+      <ul class="nav-menu">
+        <li class="nav-section-title">Core Learning</li>
+        <li class="nav-item"><a href="/dashboard"><span class="nav-icon">📊</span> <span class="nav-text">Dashboard</span></a></li>
+        <li class="nav-item"><a href="/learning"><span class="nav-icon">🧭</span> <span class="nav-text">Adaptive Path</span></a></li>
+        <li class="nav-item"><a href="/short-feed"><span class="nav-icon">📱</span> <span class="nav-text">Short Feed</span></a></li>
+        <li class="nav-item"><a href="/missions"><span class="nav-icon">🚀</span> <span class="nav-text">Missions</span></a></li>
+        <li class="nav-item"><a href="/knowledge-graph"><span class="nav-icon">🕸️</span> <span class="nav-text">Knowledge Graph</span></a></li>
+        <li class="nav-item"><a href="/learning-gaps"><span class="nav-icon">🎯</span> <span class="nav-text">Where Am I Stuck?</span></a></li>
+
+        <li class="nav-section-title">Resources & Planning</li>
+        <li class="nav-item"><a href="/courses"><span class="nav-icon">📚</span> <span class="nav-text">Courses</span></a></li>
+        <li class="nav-item"><a href="/videos"><span class="nav-icon">🎥</span> <span class="nav-text">YouTube Library</span></a></li>
+        <li class="nav-item"><a href="/history"><span class="nav-icon">🕒</span> <span class="nav-text">Viewed History</span></a></li>
+        <li class="nav-item"><a href="/career"><span class="nav-icon">🔭</span> <span class="nav-text">Career Pathways</span></a></li>
+        <li class="nav-item"><a href="/timetable"><span class="nav-icon">📅</span> <span class="nav-text">Adaptive Day</span></a></li>
+
+        <li class="nav-section-title">Community & AI</li>
+        <li class="nav-item"><a href="/community"><span class="nav-icon">👥</span> <span class="nav-text">Community Forum</span></a></li>
+        <li class="nav-item"><a href="/study-groups"><span class="nav-icon">🤝</span> <span class="nav-text">Study Groups</span></a></li>
+        <li class="nav-item"><a href="/projects"><span class="nav-icon">🛠️</span> <span class="nav-text">Projects</span></a></li>
+        <li class="nav-item"><a href="/chatbot"><span class="nav-icon">🤖</span> <span class="nav-text">AI Tutor Assistant</span></a></li>
+
+        <li class="nav-section-title">Educator Tools</li>
+        <li class="nav-item"><a href="/facilitator"><span class="nav-icon">🛡️</span> <span class="nav-text">Facilitator Portal</span></a></li>
+      </ul>
+    </aside>
+
+    <!-- Main Workspace Area -->
+    <div class="main-content">
+      <!-- Sticky Top Header -->
+      <header class="top-header">
+        <div class="header-left">
+          <!-- 1-Click Evaluator Demo Switcher -->
+          <div class="demo-switcher-badge">
+            <span>⚡ Demo Persona:</span>
+            <select id="demo-user-switcher" class="demo-select" aria-label="Demo Persona Switcher">
+              <option value="rahul" {% if session.get('name') == 'Rahul Sharma' %}selected{% endif %}>Rahul (Math: Stats 43% - Struggling / ML: Needs Support)</option>
+              <option value="priya" {% if session.get('name') == 'Priya Patel' %}selected{% endif %}>Priya (Math: Stats 82% - Advanced / ML: Improving)</option>
+              <option value="arjun" {% if session.get('name') == 'Arjun Rao' %}selected{% endif %}>Arjun (Diploma CS: ML Stable)</option>
+              <option value="ananya" {% if session.get('name') == 'Ananya Iyer' %}selected{% endif %}>Ananya (PUC Science: Physics 88%)</option>
+              <option value="kiran" {% if session.get('name') == 'Kiran Kumar' %}selected{% endif %}>Kiran (Professional AI: Diagnostic Pending)</option>
+              <option value="facilitator" {% if session.get('role') == 'facilitator' %}selected{% endif %}>Dr. Vikram Sharma (Facilitator)</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="header-right">
+          <div class="user-profile-badge">
+            <div class="avatar">{{ session.get('name', 'User')[:1] }}</div>
+            <div>
+              <div class="user-name">{{ session.get('name', 'Guest Student') }}</div>
+              <div class="user-role-tag">{{ session.get('role', 'student') }}</div>
+            </div>
+          </div>
+          <button class="btn btn-secondary btn-sm" onclick="API.logout().then(() => window.location.href='/login')">
+            Logout
+          </button>
+        </div>
+      </header>
+
+      <!-- Dynamic Page Container -->
+      <main class="page-container">
+        {% block content %}{% endblock %}
+      </main>
+    </div>
+  </div>
+
+  <!-- Global Scripts -->
+  <script src="/static/js/api.js"></script>
+  <script src="/static/js/main.js"></script>
+  {% block extra_js %}{% endblock %}
+  {% block extra_scripts %}{% endblock %}
+</body>
+</html>

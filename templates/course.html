@@ -1,0 +1,158 @@
+{% extends "base.html" %}
+
+{% block title %}Course Syllabus & Concept Hierarchy — AdaptiveLearn AI{% endblock %}
+
+{% block content %}
+<div class="content-header fade-in">
+  <div>
+    <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.25rem;">
+      <a href="/dashboard" style="color: var(--text-muted); font-size: 0.85rem;">&larr; Dashboard</a>
+      <span style="color: var(--text-muted); font-size: 0.85rem;">/</span>
+      <span id="breadcrumb-course-title" style="color: var(--accent-blue); font-size: 0.85rem;">Course</span>
+    </div>
+    <h1 class="page-title" id="course-title">Loading Course...</h1>
+    <p class="page-subtitle" id="course-desc">Adaptive prerequisite-gated curriculum aligned with demonstrated competencies.</p>
+  </div>
+  <div class="header-actions">
+    <a href="/knowledge-graph" class="btn btn-secondary">🕸️ Visual Knowledge Graph</a>
+    <a href="/learning-gaps" class="btn btn-primary">⚠️ Learning Gaps</a>
+  </div>
+</div>
+
+<!-- Course Overview Card -->
+<div class="glass-card fade-in" style="padding: 1.5rem; margin-bottom: 2rem;">
+  <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; align-items: center;">
+    <div>
+      <span style="font-size: 0.75rem; text-transform: uppercase; color: var(--text-muted); font-weight: 600;">Academic Level</span>
+      <div style="font-size: 1.1rem; font-weight: 700; color: var(--text-primary); margin-top: 2px;" id="course-level">Grade 10</div>
+    </div>
+    <div>
+      <span style="font-size: 0.75rem; text-transform: uppercase; color: var(--text-muted); font-weight: 600;">Stream / Department</span>
+      <div style="font-size: 1.1rem; font-weight: 700; color: var(--text-primary); margin-top: 2px;" id="course-stream">Science & Math</div>
+    </div>
+    <div>
+      <span style="font-size: 0.75rem; text-transform: uppercase; color: var(--text-muted); font-weight: 600;">Prerequisite Threshold</span>
+      <div style="font-size: 1.1rem; font-weight: 700; color: var(--accent-green); margin-top: 2px;">70% Mastery Required</div>
+    </div>
+    <div>
+      <span style="font-size: 0.75rem; text-transform: uppercase; color: var(--text-muted); font-weight: 600;">Enrolled Status</span>
+      <div style="font-size: 1.1rem; font-weight: 700; color: var(--accent-blue); margin-top: 2px;">Active Learner</div>
+    </div>
+  </div>
+</div>
+
+<!-- Concepts Sequence -->
+<div class="glass-card fade-in" style="padding: 1.5rem;">
+  <h2 style="font-size: 1.25rem; font-weight: 700; margin-bottom: 1.5rem; border-bottom: 1px solid var(--border-color); padding-bottom: 0.75rem;">
+    Structured Concept Sequence & Prerequisites
+  </h2>
+
+  <div id="concepts-list" style="display: flex; flex-direction: column; gap: 1rem;">
+    <!-- Injected via JS -->
+    <div style="text-align: center; padding: 2rem; color: var(--text-muted);">
+      <div class="spinner" style="margin: 0 auto 1rem auto;"></div>
+      Loading concepts and prerequisite requirements...
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', async () => {
+  const pathParts = window.location.pathname.split('/');
+  const courseId = pathParts[pathParts.length - 1] || '1';
+
+  async function loadCourse() {
+    try {
+      const res = await API.get(`/api/courses/${courseId}`);
+      if (res && res.course) {
+        renderCourseDetails(res.course, res.concepts || []);
+      } else {
+        renderDefaultCourse();
+      }
+    } catch (e) {
+      renderDefaultCourse();
+    }
+  }
+
+  function renderCourseDetails(c, concepts) {
+    document.getElementById('course-title').innerText = c.title || 'Course';
+    document.getElementById('breadcrumb-course-title').innerText = c.title || 'Course';
+    document.getElementById('course-desc').innerText = c.description || 'Comprehensive curriculum with adaptive gating.';
+    document.getElementById('course-level').innerText = c.level_name || c.grade_name || 'Academic Course';
+    document.getElementById('course-stream').innerText = c.stream_name || 'General';
+
+    const list = document.getElementById('concepts-list');
+    if (!concepts || concepts.length === 0) {
+      list.innerHTML = `<p style="color: var(--text-muted); text-align: center; padding: 1.5rem;">No concepts listed for this course.</p>`;
+      return;
+    }
+
+    list.innerHTML = concepts.map((item, idx) => {
+      const status = item.status || 'UNLOCKED';
+      const badge = getStatusBadge(status);
+      const isLocked = status === 'LOCKED';
+
+      return `
+        <div class="concept-item" style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem; background: rgba(255,255,255,0.02); border: 1px solid ${isLocked ? 'rgba(255,255,255,0.05)' : 'var(--border-color)'}; padding: 1rem 1.25rem; border-radius: var(--radius-md); opacity: ${isLocked ? 0.6 : 1};">
+          <div style="display: flex; align-items: center; gap: 1rem;">
+            <div style="width: 38px; height: 38px; border-radius: 50%; background: ${isLocked ? 'rgba(255,255,255,0.05)' : 'rgba(59,130,246,0.15)'}; display: flex; align-items: center; justify-content: center; font-weight: 700; color: ${isLocked ? 'var(--text-muted)' : 'var(--accent-blue)'};">
+              ${idx + 1}
+            </div>
+            <div>
+              <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 2px;">
+                <strong style="font-size: 1rem; color: var(--text-primary);">${item.title}</strong>
+                <span class="badge ${badge.class}">${badge.label}</span>
+                <span style="font-size: 0.75rem; color: var(--text-muted);">[${item.code || 'CONCEPT'}]</span>
+              </div>
+              <p style="font-size: 0.85rem; color: var(--text-secondary); margin: 0;">
+                ${item.description || 'Core syllabus concept with targeted questions and interactive missions.'}
+              </p>
+            </div>
+          </div>
+
+          <div style="display: flex; align-items: center; gap: 0.75rem;">
+            ${isLocked ? `
+              <span style="font-size: 0.8rem; color: var(--text-muted); display: flex; align-items: center; gap: 0.3rem;">
+                🔒 Prerequisite below 70%
+              </span>
+            ` : `
+              <a href="/learning" class="btn btn-sm btn-secondary">Learn</a>
+              <a href="/assessment" class="btn btn-sm btn-primary">Take Practice</a>
+            `}
+          </div>
+        </div>
+      `;
+    }).join('');
+  }
+
+  function getStatusBadge(status) {
+    switch ((status || '').toUpperCase()) {
+      case 'MASTERED': return { class: 'badge-green', label: 'Mastered' };
+      case 'LEARNING': return { class: 'badge-blue', label: 'In Progress' };
+      case 'NEEDS_PRACTICE': return { class: 'badge-warning', label: 'Needs Practice' };
+      case 'STRUGGLING': return { class: 'badge-danger', label: 'Struggling (43%)' };
+      case 'LOCKED': return { class: 'badge', label: 'Locked 🔒' };
+      default: return { class: 'badge-blue', label: 'Unlocked' };
+    }
+  }
+
+  function renderDefaultCourse() {
+    renderCourseDetails(
+      { title: "Mathematics Grade 10", description: "Foundational algebra, functions, descriptive statistics, and probability.", level_name: "Grade 10", stream_name: "Mathematics" },
+      [
+        { code: "ALG-01", title: "Algebraic Foundations & Polynomials", status: "MASTERED" },
+        { code: "LINEQ-02", title: "Linear Equations & Graphing", status: "MASTERED" },
+        { code: "FUNC-03", title: "Functions & Coordinate Relations", status: "LEARNING" },
+        { code: "STAT-04", title: "Descriptive Statistics & Variance", status: "STRUGGLING" },
+        { code: "PROB-05", title: "Probability & Multi-event Theory", status: "LOCKED" },
+        { code: "ADV-06", title: "Advanced Applications & Modeling", status: "LOCKED" }
+      ]
+    );
+  }
+
+  loadCourse();
+});
+</script>
+{% endblock %}

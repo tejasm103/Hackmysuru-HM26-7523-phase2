@@ -1,0 +1,308 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - AdaptiveLearn AI{% endblock %}
+
+{% block content %}
+<div id="dashboard-app">
+  <!-- Top Greeting & Key Metrics -->
+  <div class="dashboard-hero">
+    <div class="hero-content">
+      <div class="hero-text">
+        <div style="font-size: 13px; font-weight:700; color:var(--accent-cyan); text-transform:uppercase; letter-spacing:0.06em; margin-bottom:6px;">
+          Adaptive Learning & Intervention Engine
+        </div>
+        <h1 id="student-greeting">Good morning, Student 👋</h1>
+        <p style="color: #cbd5e1; font-size: 15px;">
+          Your personalized learning trajectory is continuously updated from your demonstrated mastery and interests.
+        </p>
+      </div>
+
+      <div class="hero-metrics">
+        <div class="stat-pill">
+          <span class="label">Overall Mastery</span>
+          <span class="value" id="overall-mastery-val" style="color: #10b981;">0%</span>
+        </div>
+        <div class="stat-pill">
+          <span class="label">Learning Streak</span>
+          <span class="value" id="streak-val" style="color: #f59e0b;">🔥 0 Days</span>
+        </div>
+        <div class="stat-pill">
+          <span class="label">ML Learning State</span>
+          <span class="value" id="ml-state-val" style="font-size: 18px; color: #38bdf8;">Evaluating...</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 35: Visual Two-Student Demo Switcher Highlight -->
+  <div class="student-compare-panel">
+    <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
+      <div>
+        <h3 style="font-size: 18px; color: #fff;">⚡ Adaptive Engine Proof: Two-Student Divergence Demo</h3>
+        <p style="font-size: 13px; color: #94a3b8;">
+          Notice how the same course & knowledge graph creates two completely different adaptive pathways based on demonstrated mastery!
+        </p>
+      </div>
+      <div style="display:flex; gap:10px;">
+        <button class="btn btn-secondary btn-sm" onclick="API.switchDemoUser('priya').then(() => window.location.reload())">
+          Switch to Priya (84% Mastery → Advanced Challenge)
+        </button>
+        <button class="btn btn-secondary btn-sm" onclick="API.switchDemoUser('rahul').then(() => window.location.reload())">
+          Switch to Rahul (43% Mastery → Remediation & Recovery)
+        </button>
+      </div>
+    </div>
+
+    <div class="compare-grid">
+      <div class="compare-box advanced">
+        <div style="display:flex; justify-content:space-between; margin-bottom:8px;">
+          <strong style="color:#34d399;">Student A: Priya Patel (Grade 10)</strong>
+          <span class="badge badge-mastered">Functions = 84% ✓</span>
+        </div>
+        <p style="font-size:13px; color:#cbd5e1; margin-bottom:8px;">
+          High demonstrated understanding. The Adaptive Engine routes her to:
+        </p>
+        <ul style="font-size:12px; color:#94a3b8; line-height:1.7; padding-left:18px;">
+          <li>🚀 <strong>Advanced Mission:</strong> Spacecraft Optimization & Compound Probability</li>
+          <li>⚡ <strong>Difficulty:</strong> HARD</li>
+          <li>🔓 <strong>Status:</strong> Dependent Concept (PROB-05) UNLOCKED</li>
+        </ul>
+      </div>
+
+      <div class="compare-box remediation">
+        <div style="display:flex; justify-content:space-between; margin-bottom:8px;">
+          <strong style="color:#f87171;">Student B: Rahul Sharma (Grade 10)</strong>
+          <span class="badge badge-struggling">Statistics = 43% 🔴</span>
+        </div>
+        <p style="font-size:13px; color:#cbd5e1; margin-bottom:8px;">
+          Repeated struggle detected. The Adaptive Engine triggers Remediation:
+        </p>
+        <ul style="font-size:12px; color:#94a3b8; line-height:1.7; padding-left:18px;">
+          <li>🪜 <strong>Recovery:</strong> Prerequisite Review (Functions) + Beginner Video</li>
+          <li>🛡️ <strong>Facilitator Intervention:</strong> Open Alert flagged for Dr. Sharma</li>
+          <li>🔒 <strong>Status:</strong> Probability LOCKED until Statistics reaches 70%</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- CENTRAL ADAPTIVE ENGINE: Next Best Activity Banner -->
+  <div class="adaptive-recommendation-card" id="adaptive-banner">
+    <div class="engine-tag">⚡ Central Adaptive Learning Engine Output</div>
+    <div class="activity-header">
+      <div>
+        <h2 class="activity-title" id="act-title">Loading Next Best Activity...</h2>
+        <div style="display:flex; gap:10px; margin-top:6px; flex-wrap:wrap;">
+          <span class="badge badge-learning" id="act-concept-badge">Concept: Loading...</span>
+          <span class="badge" id="act-diff-badge">Difficulty: ...</span>
+          <span class="badge" id="act-rule-badge">Rule: ...</span>
+        </div>
+      </div>
+      <div id="act-button-container">
+        <a href="/missions" class="btn btn-cyan" id="act-action-btn">Start Recommended Activity</a>
+      </div>
+    </div>
+
+    <p class="activity-reason" id="act-reason">
+      Analyzing student mastery, error frequencies, and prerequisite constraints...
+    </p>
+
+    <!-- Remediation Ladder (Rendered if struggling / Rahul) -->
+    <div id="remediation-container" style="display:none;" class="remediation-box">
+      <div style="font-size:13px; font-weight:700; color:#f87171; margin-bottom:8px;">
+        ⚠️ 5-Step Recommended Pedagogical Recovery Path:
+      </div>
+      <div class="ladder-steps" id="ladder-steps-list"></div>
+    </div>
+  </div>
+
+  <!-- Dashboard 2-Column Grid -->
+  <div class="grid-2" style="margin-bottom: 28px;">
+    <!-- Knowledge Graph Live Preview -->
+    <div class="glass-card">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+        <h3 style="font-size: 18px;">🕸️ Knowledge Graph & Prerequisites</h3>
+        <a href="/knowledge-graph" class="btn btn-secondary btn-sm">Full Screen</a>
+      </div>
+      <p style="font-size:13px; color:#94a3b8; margin-bottom:16px;">
+        Prerequisites must demonstrate ≥70% mastery to unlock dependent concepts.
+      </p>
+      <div id="dashboard-kg-container" style="min-height: 260px;"></div>
+    </div>
+
+    <!-- Multi-Signal Learning Interest Profile Chart -->
+    <div class="glass-card">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+        <div>
+          <h3 style="font-size: 18px;">🎯 Learning Interest Profile</h3>
+          <span style="font-size:11px; color:#94a3b8;">Multi-signal engagement score (Not a psychological diagnosis)</span>
+        </div>
+        <a href="/short-feed" class="btn btn-secondary btn-sm">Short Feed</a>
+      </div>
+      <div style="position:relative; height: 260px;">
+        <canvas id="interest-chart"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <!-- Weekly Activity & Mastery Correlation Charts -->
+  <div class="grid-2" style="margin-bottom: 28px;">
+    <div class="glass-card">
+      <h3 style="font-size: 18px; margin-bottom: 8px;">📈 Weekly Learning Time Distribution</h3>
+      <p style="font-size: 13px; color:#94a3b8; margin-bottom: 16px;">Time balanced between interactive missions, practice, and video engagement.</p>
+      <div style="position:relative; height: 240px;">
+        <canvas id="weekly-activity-chart"></canvas>
+      </div>
+    </div>
+
+    <div class="glass-card">
+      <h3 style="font-size: 18px; margin-bottom: 8px;">📊 Mastery Before vs After Learning Activity</h3>
+      <p style="font-size: 13px; color:#94a3b8; margin-bottom: 16px;">
+        Demonstrated academic progression across consecutive concepts.
+      </p>
+      <div style="position:relative; height: 240px;">
+        <canvas id="mastery-comparison-chart"></canvas>
+      </div>
+      <div style="font-size: 11px; color:#64748b; font-style:italic; margin-top: 10px; border-top: 1px solid var(--border-subtle); padding-top: 8px;">
+        * Notice: Mastery improvement is associated with the complete learning activity (assessments, missions, practice) and is not automatically caused by video watching.
+      </div>
+    </div>
+  </div>
+
+  <!-- Recommended YouTube Educational Playlists -->
+  <div class="glass-card" style="margin-bottom: 28px;">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+      <div>
+        <h3 style="font-size: 18px;">🎥 Curated Educational YouTube Playlists</h3>
+        <p style="font-size: 13px; color:#94a3b8;">Course-specific verified resources mapped to your current concepts.</p>
+      </div>
+      <a href="/videos" class="btn btn-secondary btn-sm">Browse All Playlists</a>
+    </div>
+
+    <div class="grid-4" id="playlists-grid">
+      <!-- Injected via JavaScript -->
+    </div>
+  </div>
+
+  <!-- Quick Access Ribbon: Timetable, Missions, Career -->
+  <div class="grid-3">
+    <div class="glass-card">
+      <div style="font-size:24px; margin-bottom:8px;">📅</div>
+      <h4 style="font-size:16px; margin-bottom:6px;">My Adaptive Day</h4>
+      <p style="font-size:13px; color:#94a3b8; margin-bottom:14px;">
+        Schedule dynamically adjusted to give extra time to weak concepts and mindful breaks.
+      </p>
+      <a href="/timetable" class="btn btn-secondary btn-sm">View Schedule</a>
+    </div>
+
+    <div class="glass-card">
+      <div style="font-size:24px; margin-bottom:8px;">🚀</div>
+      <h4 style="font-size:16px; margin-bottom:6px;">Interactive Missions</h4>
+      <p style="font-size:13px; color:#94a3b8; margin-bottom:14px;">
+        Learn by doing: control orbital stations, balance ecosystems, and repair robots.
+      </p>
+      <a href="/missions" class="btn btn-secondary btn-sm">Launch Missions</a>
+    </div>
+
+    <div class="glass-card">
+      <div style="font-size:24px; margin-bottom:8px;">🔭</div>
+      <h4 style="font-size:16px; margin-bottom:6px;">Career Pathways</h4>
+      <p style="font-size:13px; color:#94a3b8; margin-bottom:14px;">
+        Explore possible pathways matched to your learning strengths and demonstrated skills.
+      </p>
+      <a href="/career" class="btn btn-secondary btn-sm">Explore Careers</a>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="/static/js/knowledge-graph.js"></script>
+<script src="/static/js/analytics.js"></script>
+<script>
+document.addEventListener("DOMContentLoaded", async () => {
+  try {
+    const dash = await API.getDashboard();
+    
+    // 1. Populate Header info
+    document.getElementById("student-greeting").textContent = dash.greeting;
+    document.getElementById("overall-mastery-val").textContent = `${dash.student.overall_mastery}%`;
+    document.getElementById("streak-val").textContent = `🔥 ${dash.student.streak} Days`;
+    
+    const mlEl = document.getElementById("ml-state-val");
+    mlEl.textContent = dash.ml_state.state.replace("_", " ");
+    if (dash.ml_state.state === "NEEDS_SUPPORT") {
+      mlEl.style.color = "#ef4444";
+    } else if (dash.ml_state.state === "IMPROVING") {
+      mlEl.style.color = "#10b981";
+    } else {
+      mlEl.style.color = "#f59e0b";
+    }
+
+    // 2. Populate Central Adaptive Engine Banner
+    const act = dash.next_best_activity;
+    document.getElementById("act-title").textContent = `Next Step: ${act.activity_type.replace('_', ' ').toUpperCase()} (${act.concept.code}: ${act.concept.title})`;
+    document.getElementById("act-concept-badge").textContent = `${act.concept.title} (Mastery: ${act.concept.mastery_score}%)`;
+    
+    const diffBadge = document.getElementById("act-diff-badge");
+    diffBadge.textContent = `Difficulty: ${act.difficulty}`;
+    diffBadge.className = `badge ${act.difficulty === 'HARD' ? 'badge-struggling' : (act.difficulty === 'EASY' ? 'badge-mastered' : 'badge-practice')}`;
+
+    document.getElementById("act-rule-badge").textContent = `Rule: ${act.rule_matched.split(':')[0]}`;
+    document.getElementById("act-reason").textContent = act.recommendation_text;
+
+    // Action button URL
+    const btn = document.getElementById("act-action-btn");
+    if (act.activity_type === "mission" || act.activity_type === "guided_mission") {
+      btn.textContent = "🚀 Launch Guided Mission";
+      btn.href = act.mission ? `/missions/${act.mission.id}` : "/missions";
+    } else if (act.activity_type === "prerequisite_review") {
+      btn.textContent = "🪜 Start Recovery Path";
+      btn.href = `/learning-gaps?concept_id=${act.concept.id}`;
+    } else {
+      btn.textContent = "✍️ Start Targeted Practice";
+      btn.href = `/assessment?concept_id=${act.concept.id}`;
+    }
+
+    // 3. Render Remediation Ladder if applicable
+    if (act.remediation_ladder && act.remediation_ladder.length > 0) {
+      const remContainer = document.getElementById("remediation-container");
+      const ladderList = document.getElementById("ladder-steps-list");
+      remContainer.style.display = "block";
+      ladderList.innerHTML = act.remediation_ladder.map((s, idx) => `
+        <div class="ladder-item ${idx === 0 ? 'active' : ''}">
+          <div style="font-weight:700; color:#fff; margin-bottom:4px;">${s.title}</div>
+          <div style="color:#94a3b8; font-size:11px;">${s.description}</div>
+        </div>
+      `).join('');
+    }
+
+    // 4. Render Playlists
+    const pGrid = document.getElementById("playlists-grid");
+    if (pGrid && dash.recommended_playlists) {
+      pGrid.innerHTML = dash.recommended_playlists.map(p => `
+        <div class="glass-card" style="padding:16px; display:flex; flex-direction:column; justify-content:space-between;">
+          <div>
+            <div style="height:120px; border-radius:10px; background-size:cover; background-position:center; margin-bottom:12px;"
+                 style="background-image:url('${p.thumbnail_url || 'https://images.unsplash.com/photo-1532094349884-543bc11b234d?auto=format&fit=crop&w=600&q=80'}');"></div>
+            <h4 style="font-size:14px; margin-bottom:6px; line-height:1.3;">${p.title}</h4>
+            <div style="font-size:11px; color:#94a3b8;">${p.channel_name || 'Educational Channel'}</div>
+          </div>
+          <a href="/videos" class="btn btn-secondary btn-sm" style="margin-top:12px; width:100%;">Watch Playlist</a>
+        </div>
+      `).join('');
+    }
+
+    // 5. Initialize Knowledge Graph
+    const kg = new KnowledgeGraphVisualizer("dashboard-kg-container");
+    kg.load(dash.current_course ? dash.current_course.id : 1);
+
+    // 6. Initialize Chart.js analytics
+    AnalyticsVisualizer.renderDashboardCharts();
+
+  } catch (err) {
+    console.error("Dashboard initialization error:", err);
+  }
+});
+</script>
+{% endblock %}

@@ -1,0 +1,205 @@
+{% extends "base.html" %}
+
+{% block title %}Where Am I Stuck? - AdaptiveLearn AI{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <h1 class="page-title">🎯 My Learning Gaps: "Where Am I Stuck?"</h1>
+  <p class="page-subtitle">
+    Pinpoint exact conceptual bottlenecks, understand error patterns, and execute targeted recovery paths.
+  </p>
+</div>
+
+<div class="grid-2" style="align-items: flex-start;">
+  <!-- Left Column: Syllabus Concept Checklist -->
+  <div class="glass-card">
+    <h3 style="font-size:18px; margin-bottom: 6px;">Mathematics Syllabus Concepts</h3>
+    <p style="font-size:13px; color:#94a3b8; margin-bottom: 20px;">Click any concept to diagnose performance obstacles.</p>
+
+    <div id="concept-checklist" style="display:flex; flex-direction:column; gap:10px;">
+      <!-- Populated via JavaScript -->
+    </div>
+  </div>
+
+  <!-- Right Column: Deep Diagnosis & 5-Step Recommended Recovery Path -->
+  <div class="glass-card highlight" id="diagnosis-panel">
+    <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:16px;">
+      <div>
+        <span class="badge badge-struggling" id="diag-badge">Needs Remediation</span>
+        <h2 style="font-size:22px; margin-top:6px; color:#fff;" id="diag-concept-title">Statistics: Mean, Variance & Distributions</h2>
+      </div>
+      <div style="font-size:24px;">🔍</div>
+    </div>
+
+    <!-- Why Am I Stuck? Box -->
+    <div style="background:rgba(239, 68, 68, 0.08); border:1px solid rgba(239, 68, 68, 0.3); border-radius:12px; padding:18px; margin-bottom:20px;">
+      <h4 style="color:#f87171; font-size:15px; margin-bottom:12px;">Why Am I Stuck?</h4>
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; font-size:13px; color:#cbd5e1;">
+        <div>• Assessment Score: <strong style="color:#fff;" id="diag-score">43%</strong></div>
+        <div>• Failed Attempts: <strong style="color:#ef4444;" id="diag-failed">3 Attempts</strong></div>
+        <div>• Prerequisite Mastery: <strong style="color:#f59e0b;" id="diag-prereq">61% (Functions)</strong></div>
+        <div>• Recent Performance: <strong style="color:#ef4444;" id="diag-trend">Declining</strong></div>
+      </div>
+      <div style="margin-top:12px; font-size:12px; color:#fca5a5; border-top:1px dashed rgba(239, 68, 68, 0.2); padding-top:8px;">
+        ⚠️ <strong>Common Error Pattern Detected:</strong> Confusing sample variance denominator (n-1) with population (n) and missing squared deviations.
+      </div>
+    </div>
+
+    <!-- Recommended Recovery Path -->
+    <div>
+      <h4 style="font-size:16px; margin-bottom:12px; color:#fff;">Recommended Recovery Path</h4>
+      <div id="recovery-steps-list" style="display:flex; flex-direction:column; gap:10px;">
+        <!-- Injected via JavaScript -->
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener("DOMContentLoaded", async () => {
+  const checklistEl = document.getElementById("concept-checklist");
+  try {
+    const data = await API.getMasteryOverview(1);
+    const concepts = data.concepts || [];
+    
+    // Check if query param specifies concept
+    const urlParams = new URLSearchParams(window.location.search);
+    const targetCid = parseInt(urlParams.get("concept_id")) || 4;
+
+    checklistEl.innerHTML = concepts.map(c => {
+      let icon = "✓";
+      let badgeClass = "badge-mastered";
+      if (c.status === "LOCKED") {
+        icon = "🔒 Locked";
+        badgeClass = "badge-locked";
+      } else if (c.status === "STRUGGLING") {
+        icon = "🔴";
+        badgeClass = "badge-struggling";
+      } else if (c.status === "NEEDS_PRACTICE") {
+        icon = "⚠️";
+        badgeClass = "badge-practice";
+      } else if (c.status === "LEARNING") {
+        icon = "⏳";
+        badgeClass = "badge-learning";
+      }
+
+      const isSelected = c.id === targetCid;
+
+      return `
+        <div onclick="selectConceptForDiagnosis(${c.id})" 
+             style="cursor:pointer; display:flex; justify-content:space-between; align-items:center; padding:14px 18px; border-radius:12px; 
+                    background: ${isSelected ? 'rgba(99, 102, 241, 0.15)' : 'rgba(255, 255, 255, 0.04)'};
+                    border: 1px solid ${isSelected ? 'var(--accent-primary)' : 'var(--border-subtle)'};">
+          <div>
+            <div style="font-weight:700; color:#fff; font-size:14px;">${c.code}: ${c.title}</div>
+            <div style="font-size:11px; color:#94a3b8;">${c.category} • Sequence #${c.sequence_order}</div>
+          </div>
+          <div style="display:flex; align-items:center; gap:10px;">
+            <span style="font-weight:700; font-size:14px; color:${c.mastery_score >= 70 ? '#34d399' : (c.mastery_score < 40 ? '#f87171' : '#fbbf24')};">
+              ${c.status === 'LOCKED' ? '🔒' : Math.round(c.mastery_score) + '%'}
+            </span>
+            <span class="badge ${badgeClass}">${icon}</span>
+          </div>
+        </div>
+      `;
+    }).join('');
+
+    // Pre-select target concept
+    selectConceptForDiagnosis(targetCid, concepts);
+
+  } catch (err) {
+    checklistEl.innerHTML = `<div style="color:#ef4444;">Error loading learning gaps: ${err.message}</div>`;
+  }
+});
+
+function selectConceptForDiagnosis(conceptId, conceptsList) {
+  // Update diagnosis panel details
+  const recoveryList = document.getElementById("recovery-steps-list");
+  
+  if (conceptId === 4) { // Statistics
+    document.getElementById("diag-concept-title").textContent = "STAT-04: Statistics: Mean, Variance & Distributions";
+    document.getElementById("diag-score").textContent = "43%";
+    document.getElementById("diag-failed").textContent = "3 Failed Attempts";
+    document.getElementById("diag-prereq").textContent = "61% (Functions & Coordinate Relations)";
+    document.getElementById("diag-trend").textContent = "Declining";
+    document.getElementById("diag-badge").textContent = "Struggling (<40%)";
+    document.getElementById("diag-badge").className = "badge badge-struggling";
+
+    recoveryList.innerHTML = `
+      <div style="background:rgba(255,255,255,0.03); border:1px solid var(--border-subtle); border-radius:10px; padding:12px; display:flex; justify-content:space-between; align-items:center;">
+        <div>
+          <strong style="color:#fff; font-size:13px;">1. Review Prerequisite (FUNC-03)</strong>
+          <div style="font-size:11px; color:#94a3b8;">Reinforce coordinate relations and quadratic functions.</div>
+        </div>
+        <a href="/assessment?concept_id=3" class="btn btn-secondary btn-sm">Review</a>
+      </div>
+      <div style="background:rgba(255,255,255,0.03); border:1px solid var(--border-subtle); border-radius:10px; padding:12px; display:flex; justify-content:space-between; align-items:center;">
+        <div>
+          <strong style="color:#fff; font-size:13px;">2. Watch Beginner Explanation</strong>
+          <div style="font-size:11px; color:#94a3b8;">Why Do We Square Differences in Variance? (90s short)</div>
+        </div>
+        <a href="/short-feed" class="btn btn-secondary btn-sm">Watch</a>
+      </div>
+      <div style="background:rgba(255,255,255,0.03); border:1px solid var(--border-subtle); border-radius:10px; padding:12px; display:flex; justify-content:space-between; align-items:center;">
+        <div>
+          <strong style="color:#fff; font-size:13px;">3. Complete Guided Learning Mission</strong>
+          <div style="font-size:11px; color:#94a3b8;">Save the Space Station: Orbital Resource Equilibrium</div>
+        </div>
+        <a href="/missions/1" class="btn btn-cyan btn-sm">Launch Mission</a>
+      </div>
+      <div style="background:rgba(255,255,255,0.03); border:1px solid var(--border-subtle); border-radius:10px; padding:12px; display:flex; justify-content:space-between; align-items:center;">
+        <div>
+          <strong style="color:#fff; font-size:13px;">4. Solve Scaffolded Practice</strong>
+          <div style="font-size:11px; color:#94a3b8;">3 step-by-step contextualized variance problems.</div>
+        </div>
+        <a href="/assessment?concept_id=4" class="btn btn-secondary btn-sm">Practice</a>
+      </div>
+      <div style="background:rgba(255,255,255,0.03); border:1px solid var(--border-subtle); border-radius:10px; padding:12px; display:flex; justify-content:space-between; align-items:center;">
+        <div>
+          <strong style="color:#fff; font-size:13px;">5. Diagnostic Reassessment</strong>
+          <div style="font-size:11px; color:#94a3b8;">Demonstrate ≥70% mastery to unlock Probability!</div>
+        </div>
+        <a href="/assessment?concept_id=4" class="btn btn-primary btn-sm">Reassess</a>
+      </div>
+    `;
+  } else if (conceptId === 5) { // Probability (Locked for Rahul, Learning for Priya)
+    document.getElementById("diag-concept-title").textContent = "PROB-05: Probability: Classical & Conditional";
+    document.getElementById("diag-score").textContent = "0%";
+    document.getElementById("diag-failed").textContent = "0 Attempts";
+    document.getElementById("diag-prereq").textContent = "43% (Statistics requires ≥70%)";
+    document.getElementById("diag-trend").textContent = "Locked";
+    document.getElementById("diag-badge").textContent = "🔒 Locked by Knowledge Graph";
+    document.getElementById("diag-badge").className = "badge badge-locked";
+
+    recoveryList.innerHTML = `
+      <div style="background:rgba(245,158,11,0.1); border:1px solid rgba(245,158,11,0.3); border-radius:10px; padding:16px;">
+        <strong style="color:#fbbf24; font-size:14px;">🔒 Progression Gated:</strong>
+        <p style="font-size:13px; color:#cbd5e1; margin-top:6px;">
+          Probability requires Statistics mastery of at least 70.0% (Current: 43.0%).
+          Complete the Statistics recovery path above to unlock this concept!
+        </p>
+      </div>
+    `;
+  } else {
+    document.getElementById("diag-concept-title").textContent = "Concept Diagnostic";
+    document.getElementById("diag-score").textContent = "80%+";
+    document.getElementById("diag-failed").textContent = "0 Failed Attempts";
+    document.getElementById("diag-prereq").textContent = "Satisfied";
+    document.getElementById("diag-trend").textContent = "Mastered";
+    document.getElementById("diag-badge").textContent = "Mastered (≥70%)";
+    document.getElementById("diag-badge").className = "badge badge-mastered";
+
+    recoveryList.innerHTML = `
+      <div style="background:rgba(16,185,129,0.1); border:1px solid rgba(16,185,129,0.3); border-radius:10px; padding:16px;">
+        <strong style="color:#34d399; font-size:14px;">✓ Foundations Solid:</strong>
+        <p style="font-size:13px; color:#cbd5e1; margin-top:6px;">
+          Demonstrated mastery meets progression requirements. Ready for downstream applied challenges!
+        </p>
+      </div>
+    `;
+  }
+}
+</script>
+{% endblock %}

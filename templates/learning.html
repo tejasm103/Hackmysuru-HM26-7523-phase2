@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+
+{% block title %}Today's Adaptive Path - AdaptiveLearn AI{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <h1 class="page-title">🧭 Today's Personalized Adaptive Learning Path</h1>
+  <p class="page-subtitle">
+    Generated dynamically by the Central Adaptive Engine based on your mastery, prerequisites, and learning interests.
+  </p>
+</div>
+
+<div class="glass-card" style="margin-bottom:28px;">
+  <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; flex-wrap:wrap; gap:12px;">
+    <div>
+      <span class="engine-tag">⚡ Current Recommended Activity</span>
+      <h2 style="font-size:22px; color:#fff;" id="next-act-title">Loading Next Activity...</h2>
+      <p style="font-size:14px; color:#cbd5e1; margin-top:4px;" id="next-act-desc"></p>
+    </div>
+    <div id="next-act-btn-container"></div>
+  </div>
+</div>
+
+<div class="glass-card">
+  <h3 style="font-size:18px; margin-bottom:16px;">Step-by-Step Course Sequence</h3>
+  <div id="adaptive-path-list" style="display:flex; flex-direction:column; gap:14px;">
+    <!-- Injected via JavaScript -->
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener("DOMContentLoaded", async () => {
+  try {
+    const nextAct = await API.getNextActivity(1);
+    const pathData = await API.getAdaptivePath(1);
+
+    document.getElementById("next-act-title").textContent = 
+      `${nextAct.concept.code}: ${nextAct.concept.title} (${nextAct.activity_type.toUpperCase().replace('_', ' ')})`;
+    document.getElementById("next-act-desc").textContent = nextAct.recommendation_text;
+
+    const btnContainer = document.getElementById("next-act-btn-container");
+    if (nextAct.activity_type === "mission" || nextAct.activity_type === "guided_mission") {
+      btnContainer.innerHTML = `<a href="${nextAct.mission ? '/missions/' + nextAct.mission.id : '/missions'}" class="btn btn-cyan btn-lg">Launch Mission 🚀</a>`;
+    } else if (nextAct.activity_type === "prerequisite_review") {
+      btnContainer.innerHTML = `<a href="/learning-gaps?concept_id=${nextAct.concept.id}" class="btn btn-primary btn-lg">Start Recovery Path 🪜</a>`;
+    } else {
+      btnContainer.innerHTML = `<a href="/assessment?concept_id=${nextAct.concept.id}" class="btn btn-primary btn-lg">Start Practice ✍️</a>`;
+    }
+
+    const pathList = document.getElementById("adaptive-path-list");
+    pathList.innerHTML = (pathData.adaptive_path || []).map((step, idx) => {
+      const c = step.concept;
+      const isLocked = c.status === "LOCKED";
+      return `
+        <div style="background:rgba(255,255,255,0.03); border:1px solid var(--border-subtle); border-radius:12px; padding:18px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">
+          <div style="display:flex; align-items:center; gap:16px;">
+            <div class="step-number-badge">${c.status === 'MASTERED' ? '✓' : (isLocked ? '🔒' : idx + 1)}</div>
+            <div>
+              <div style="font-weight:700; color:#fff; font-size:15px;">${c.code}: ${c.title}</div>
+              <div style="font-size:12px; color:#94a3b8;">${step.recommended_action} • Difficulty: ${step.difficulty}</div>
+            </div>
+          </div>
+          <div style="display:flex; align-items:center; gap:14px;">
+            <span style="font-weight:700; font-size:14px; color:${c.mastery_score >= 70 ? '#34d399' : (c.mastery_score < 40 ? '#f87171' : '#fbbf24')};">
+              ${isLocked ? '🔒 Locked' : Math.round(c.mastery_score) + '% Mastery'}
+            </span>
+            ${!isLocked ? `<a href="/assessment?concept_id=${c.id}" class="btn btn-secondary btn-sm">Practice</a>` : ''}
+          </div>
+        </div>
+      `;
+    }).join('');
+
+  } catch (err) {
+    console.error("Adaptive path load error:", err);
+  }
+});
+</script>
+{% endblock %}

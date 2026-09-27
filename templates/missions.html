@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+
+{% block title %}Learning Missions - AdaptiveLearn AI{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <h1 class="page-title">🚀 Interactive Academic Learning Missions</h1>
+  <p class="page-subtitle">
+    Learn by doing. Control life support systems, design balanced biospheres, and program robot sensors.
+    Missions must be completed through operational verification (no manual mark-complete).
+  </p>
+</div>
+
+<div class="grid-2" id="missions-grid">
+  <!-- Injected via JavaScript -->
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener("DOMContentLoaded", async () => {
+  const container = document.getElementById("missions-grid");
+  container.innerHTML = `<div style="padding:20px;">Loading interactive missions...</div>`;
+  try {
+    const data = await API.getMissions();
+    const missions = data.missions || [];
+    
+    container.innerHTML = missions.map(m => `
+      <div class="glass-card" style="display:flex; flex-direction:column; justify-content:space-between;">
+        <div>
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+            <span class="mission-theme-tag">${m.theme} Simulation</span>
+            <span class="badge ${m.is_completed ? 'badge-mastered' : 'badge-learning'}">
+              ${m.is_completed ? '✓ Completed' : 'In Progress'}
+            </span>
+          </div>
+
+          <h3 style="font-size:20px; margin-bottom:10px; color:#fff;">${m.title}</h3>
+          <p style="font-size:14px; color:#cbd5e1; margin-bottom:16px; line-height:1.5;">
+            ${m.scenario_description}
+          </p>
+
+          <div style="display:flex; gap:16px; font-size:12px; color:#94a3b8; margin-bottom:16px;">
+            <span>📚 Concept: <strong style="color:#fff;">${m.concept_title}</strong></span>
+            <span>⚡ Difficulty: <strong style="color:#fff;">${m.difficulty}</strong></span>
+            <span>🏆 Reward: <strong style="color:#38bdf8;">+${m.xp_reward} XP</strong></span>
+          </div>
+        </div>
+
+        <div style="display:flex; justify-content:space-between; align-items:center; border-top:1px solid var(--border-subtle); padding-top:16px; margin-top:16px;">
+          <span style="font-size:12px; color:#94a3b8;">
+            ${m.is_completed ? 'Parameters Verified' : `Current Task: Step ${m.current_step}`}
+          </span>
+          <a href="/missions/${m.id}" class="btn ${m.is_completed ? 'btn-secondary' : 'btn-cyan'} btn-sm">
+            ${m.is_completed ? 'Replay Simulation' : 'Launch Mission 🚀'}
+          </a>
+        </div>
+      </div>
+    `).join('');
+  } catch (err) {
+    container.innerHTML = `<div style="color:#ef4444; padding:20px;">Error loading missions: ${err.message}</div>`;
+  }
+});
+</script>
+{% endblock %}

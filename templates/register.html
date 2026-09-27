@@ -1,0 +1,155 @@
+{% extends "base.html" %}
+
+{% block title %}Create Account — AdaptiveLearn AI{% endblock %}
+
+{% block content %}
+<div style="min-height: 80vh; display: flex; align-items: center; justify-content: center; padding: 2rem 1rem;">
+  <div class="glass-card fade-in" style="max-width: 520px; width: 100%; padding: 2.5rem;">
+    
+    <div style="text-align: center; margin-bottom: 2rem;">
+      <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">🎓</div>
+      <h1 style="font-size: 1.6rem; font-weight: 800; color: var(--text-primary); letter-spacing: -0.02em;">Create Your Account</h1>
+      <p style="font-size: 0.88rem; color: var(--text-secondary); margin-top: 0.35rem;">
+        “One platform. Shared knowledge. Personalized learning. Connected learners.”
+      </p>
+    </div>
+
+    <!-- Error Alert Box -->
+    <div id="register-error" style="display: none; background: rgba(239, 68, 68, 0.15); border: 1px solid var(--accent-red); color: #fca5a5; padding: 0.75rem 1rem; border-radius: var(--radius-sm); font-size: 0.85rem; margin-bottom: 1.5rem;">
+    </div>
+
+    <form id="register-form">
+      <div style="margin-bottom: 1.25rem;">
+        <label for="reg-name" style="display: block; font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.4rem; font-weight: 500;">
+          Full Name
+        </label>
+        <input type="text" id="reg-name" required placeholder="e.g. Ramesh Kumar" style="width: 100%; background: rgba(255,255,255,0.05); border: 1px solid var(--border-color); color: var(--text-primary); padding: 0.75rem 1rem; border-radius: var(--radius-sm); font-size: 0.95rem; outline: none;">
+      </div>
+
+      <div style="margin-bottom: 1.25rem;">
+        <label for="reg-email" style="display: block; font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.4rem; font-weight: 500;">
+          Email Address
+        </label>
+        <input type="email" id="reg-email" required placeholder="e.g. ramesh@example.com" style="width: 100%; background: rgba(255,255,255,0.05); border: 1px solid var(--border-color); color: var(--text-primary); padding: 0.75rem 1rem; border-radius: var(--radius-sm); font-size: 0.95rem; outline: none;">
+      </div>
+
+      <div style="margin-bottom: 1.25rem;">
+        <label for="reg-password" style="display: block; font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.4rem; font-weight: 500;">
+          Password (min 6 characters)
+        </label>
+        <input type="password" id="reg-password" minlength="6" required placeholder="••••••••" style="width: 100%; background: rgba(255,255,255,0.05); border: 1px solid var(--border-color); color: var(--text-primary); padding: 0.75rem 1rem; border-radius: var(--radius-sm); font-size: 0.95rem; outline: none;">
+      </div>
+
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.25rem;">
+        <div>
+          <label style="display: block; font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.4rem; font-weight: 500;">
+            Account Type
+          </label>
+          <select id="reg-role" style="width: 100%; background: rgba(15,23,42,0.9); border: 1px solid var(--border-color); color: var(--text-primary); padding: 0.75rem 1rem; border-radius: var(--radius-sm); font-size: 0.95rem;">
+            <option value="student" selected>Student Learner</option>
+            <option value="facilitator">Teacher / Facilitator</option>
+          </select>
+        </div>
+
+        <div>
+          <label style="display: block; font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.4rem; font-weight: 500;">
+            Education Level
+          </label>
+          <select id="reg-level" style="width: 100%; background: rgba(15,23,42,0.9); border: 1px solid var(--border-color); color: var(--text-primary); padding: 0.75rem 1rem; border-radius: var(--radius-sm); font-size: 0.95rem;">
+            <option value="Grade 10" selected>Grade 10</option>
+            <option value="PUC">PUC (Pre-University)</option>
+            <option value="Diploma">Diploma (Polytechnic)</option>
+            <option value="ITI">ITI (Vocational)</option>
+            <option value="Professional Course">Professional / Skill Course</option>
+          </select>
+        </div>
+      </div>
+
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.75rem;">
+        <div>
+          <label style="display: block; font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.4rem; font-weight: 500;">
+            Stream / Branch
+          </label>
+          <select id="reg-stream" style="width: 100%; background: rgba(15,23,42,0.9); border: 1px solid var(--border-color); color: var(--text-primary); padding: 0.75rem 1rem; border-radius: var(--radius-sm); font-size: 0.95rem;">
+            <option value="Science & Mathematics" selected>Science & Mathematics</option>
+            <option value="Commerce">Commerce</option>
+            <option value="Computer Science">Computer Science</option>
+            <option value="Electronics">Electronics</option>
+            <option value="Mechanical">Mechanical</option>
+            <option value="Civil">Civil</option>
+            <option value="Biology">Biology</option>
+            <option value="Programming">Programming</option>
+          </select>
+        </div>
+
+        <div>
+          <label style="display: block; font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.4rem; font-weight: 500;">
+            Preferred Language
+          </label>
+          <select id="reg-lang" style="width: 100%; background: rgba(15,23,42,0.9); border: 1px solid var(--border-color); color: var(--text-primary); padding: 0.75rem 1rem; border-radius: var(--radius-sm); font-size: 0.95rem;">
+            <option value="English" selected>English</option>
+            <option value="Kannada">ಕನ್ನಡ (Kannada)</option>
+            <option value="Hindi">हिन्दी (Hindi)</option>
+            <option value="Telugu">తెలుగు (Telugu)</option>
+            <option value="Tamil">தமிழ் (Tamil)</option>
+            <option value="Malayalam">മലയാളം (Malayalam)</option>
+          </select>
+        </div>
+      </div>
+
+      <button type="submit" id="btn-reg-submit" class="btn btn-primary" style="width: 100%; padding: 0.8rem; font-size: 1rem; justify-content: center;">
+        Complete Registration &rarr;
+      </button>
+    </form>
+
+    <div style="text-align: center; margin-top: 1.5rem; font-size: 0.85rem; color: var(--text-secondary);">
+      Already have an account? <a href="/login" style="color: var(--accent-blue); font-weight: 600;">Sign In &rarr;</a>
+    </div>
+
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+document.getElementById('register-form').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const errBox = document.getElementById('register-error');
+  errBox.style.display = 'none';
+
+  const name = document.getElementById('reg-name').value.trim();
+  const email = document.getElementById('reg-email').value.trim();
+  const password = document.getElementById('reg-password').value;
+  const role = document.getElementById('reg-role').value;
+  const study_level = document.getElementById('reg-level').value;
+  const stream = document.getElementById('reg-stream').value;
+  const preferred_language = document.getElementById('reg-lang').value;
+
+  const btn = document.getElementById('btn-reg-submit');
+  btn.disabled = true;
+  btn.innerText = "Creating account...";
+
+  try {
+    const res = await API.post('/api/auth/register', {
+      name, email, password, role, study_level, stream, preferred_language
+    });
+    if (res && res.status === 'success') {
+      if (role === 'facilitator') {
+        window.location.href = '/facilitator';
+      } else {
+        window.location.href = '/onboarding';
+      }
+    } else {
+      errBox.innerText = res.error || "Registration failed. Try a different email.";
+      errBox.style.display = 'block';
+    }
+  } catch (err) {
+    errBox.innerText = "Network error during registration.";
+    errBox.style.display = 'block';
+  } finally {
+    btn.disabled = false;
+    btn.innerText = "Complete Registration →";
+  }
+});
+</script>
+{% endblock %}

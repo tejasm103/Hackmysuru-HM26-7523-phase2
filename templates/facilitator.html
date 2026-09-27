@@ -1,0 +1,231 @@
+{% extends "base.html" %}
+
+{% block title %}Facilitator Command Center - AdaptiveLearn AI{% endblock %}
+
+{% block content %}
+<div class="page-header" style="display:flex; justify-content:space-between; align-items:flex-end; flex-wrap:wrap; gap:16px;">
+  <div>
+    <h1 class="page-title">🛡️ Facilitator Intervention Command Center</h1>
+    <p class="page-subtitle">
+      Real-time automated struggle detection, evidence telemetry, and actionable pedagogical interventions.
+    </p>
+  </div>
+  <div>
+    <span class="badge badge-struggling" style="padding:8px 16px; font-size:13px;">
+      🔴 1 Student Needs Urgent Intervention (Rahul Sharma)
+    </span>
+  </div>
+</div>
+
+<!-- Facilitator Telemetry Cards (Section 23) -->
+<div class="grid-4" style="margin-bottom: 28px;">
+  <div class="stat-pill">
+    <span class="label">Total Students</span>
+    <span class="value" id="card-total-students">5</span>
+  </div>
+  <div class="stat-pill">
+    <span class="label">Improving (ML State)</span>
+    <span class="value" id="card-improving" style="color:#10b981;">2</span>
+  </div>
+  <div class="stat-pill">
+    <span class="label">Needs Support (ML State)</span>
+    <span class="value" id="card-needs-support" style="color:#ef4444;">1</span>
+  </div>
+  <div class="stat-pill">
+    <span class="label">Active Interventions</span>
+    <span class="value" id="card-active-interventions" style="color:#f59e0b;">1</span>
+  </div>
+</div>
+
+<!-- Needs Attention / Actionable Interventions Table -->
+<div class="glass-card" style="margin-bottom: 28px;">
+  <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+    <div>
+      <h3 style="font-size:18px;">⚠️ Students Requiring Immediate Intervention</h3>
+      <p style="font-size:13px; color:#94a3b8;">Triggered automatically upon repeated failures, declining trends, or prerequisite bottlenecks.</p>
+    </div>
+  </div>
+
+  <div style="overflow-x:auto;">
+    <table style="width:100%; border-collapse:collapse; text-align:left; font-size:13px;">
+      <thead>
+        <tr style="border-bottom:1px solid var(--border-subtle); color:#94a3b8; text-transform:uppercase; font-size:11px; letter-spacing:0.06em;">
+          <th style="padding:12px 14px;">Student</th>
+          <th style="padding:12px 14px;">Course / Concept</th>
+          <th style="padding:12px 14px;">Mastery</th>
+          <th style="padding:12px 14px;">ML State</th>
+          <th style="padding:12px 14px;">Evidence Signals</th>
+          <th style="padding:12px 14px;">Actionable Plan</th>
+          <th style="padding:12px 14px; text-align:right;">Intervention Action</th>
+        </tr>
+      </thead>
+      <tbody id="interventions-tbody">
+        <!-- Injected via JavaScript -->
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- All Enrolled Students Overview Table -->
+<div class="glass-card">
+  <h3 style="font-size:18px; margin-bottom:14px;">👥 Enrolled Learners Roster</h3>
+  <div style="overflow-x:auto;">
+    <table style="width:100%; border-collapse:collapse; text-align:left; font-size:13px;">
+      <thead>
+        <tr style="border-bottom:1px solid var(--border-subtle); color:#94a3b8; font-size:11px; text-transform:uppercase;">
+          <th style="padding:10px 14px;">Name</th>
+          <th style="padding:10px 14px;">Education Level</th>
+          <th style="padding:10px 14px;">Focus Course</th>
+          <th style="padding:10px 14px;">Active Concept</th>
+          <th style="padding:10px 14px;">Demonstrated Mastery</th>
+          <th style="padding:10px 14px;">ML State</th>
+          <th style="padding:10px 14px; text-align:right;">Actions</th>
+        </tr>
+      </thead>
+      <tbody id="students-tbody">
+        <!-- Injected via JavaScript -->
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- Action Modal -->
+<div id="intervention-modal" class="modal-overlay">
+  <div class="modal-card">
+    <h3 style="margin-bottom:12px;" id="modal-int-title">Assign Facilitator Intervention</h3>
+    <p style="font-size:14px; color:#cbd5e1; margin-bottom:18px;" id="modal-int-desc"></p>
+
+    <div style="margin-bottom:16px;">
+      <label style="font-size:12px; color:#94a3b8; font-weight:700;">Select Action Type:</label>
+      <select id="modal-action-select" class="demo-select" style="width:100%; margin-top:6px;">
+        <option value="assign_mission">🚀 Assign Guided Mission (Save the Space Station)</option>
+        <option value="assign_playlist">🎥 Assign Concept Breakdown Video Playlist</option>
+        <option value="assign_practice">✍️ Assign 3 Easy Practice Problems</option>
+        <option value="reassess">🎯 Schedule Concept Reassessment</option>
+        <option value="mark_intervention">✓ Mark Direct 1-on-1 Mentoring Completed</option>
+      </select>
+    </div>
+
+    <div style="margin-bottom:20px;">
+      <label style="font-size:12px; color:#94a3b8; font-weight:700;">Facilitator Notes (Optional):</label>
+      <textarea id="modal-action-notes" class="sim-input" style="width:100%; height:70px; margin-top:6px; resize:none;" placeholder="Notes sent to student dashboard..."></textarea>
+    </div>
+
+    <div style="display:flex; justify-content:flex-end; gap:10px;">
+      <button class="btn btn-secondary btn-sm" onclick="document.getElementById('intervention-modal').classList.remove('active')">Cancel</button>
+      <button class="btn btn-primary btn-sm" onclick="executeInterventionAction()">Dispatch Intervention Action</button>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+let activeInterventionId = null;
+
+document.addEventListener("DOMContentLoaded", async () => {
+  try {
+    const intData = await API.getInterventions();
+    const studentsData = await API.getFacilitatorStudents();
+
+    // Populate Metrics
+    document.getElementById("card-total-students").textContent = intData.metrics.total_students;
+    document.getElementById("card-improving").textContent = intData.metrics.improving;
+    document.getElementById("card-needs-support").textContent = intData.metrics.needs_support;
+    document.getElementById("card-active-interventions").textContent = intData.metrics.active_interventions;
+
+    // Populate Needs Attention Table
+    const tbody = document.getElementById("interventions-tbody");
+    const openInts = intData.interventions || [];
+
+    if (openInts.length === 0) {
+      tbody.innerHTML = `<tr><td colspan="7" style="padding:20px; text-align:center; color:#94a3b8;">No active struggle alerts. All learners progressing nominally.</td></tr>`;
+    } else {
+      tbody.innerHTML = openInts.map(iv => `
+        <tr style="border-bottom:1px solid rgba(255,255,255,0.05);">
+          <td style="padding:14px;">
+            <div style="font-weight:700; color:#fff;">${iv.student_name}</div>
+            <div style="font-size:11px; color:#94a3b8;">${iv.study_level}</div>
+          </td>
+          <td style="padding:14px;">
+            <div style="color:#fff;">${iv.concept_title}</div>
+            <div style="font-size:11px; color:#94a3b8;">${iv.course_title}</div>
+          </td>
+          <td style="padding:14px;">
+            <span class="badge badge-struggling">43% (Struggling)</span>
+          </td>
+          <td style="padding:14px;">
+            <span class="badge badge-struggling">NEEDS SUPPORT</span>
+          </td>
+          <td style="padding:14px; max-width:240px; color:#cbd5e1; font-size:12px;">
+            • Score: 42%<br>
+            • Failed Attempts: 3<br>
+            • Functions Prereq: 61%
+          </td>
+          <td style="padding:14px; max-width:260px; font-size:12px; color:#93c5fd; white-space:pre-line;">
+            ${iv.recommendation}
+          </td>
+          <td style="padding:14px; text-align:right;">
+            <button class="btn btn-cyan btn-sm" onclick="openActionModal(${iv.id}, '${iv.student_name}', '${iv.concept_title}')">
+              Take Action ⚡
+            </button>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    // Populate Enrolled Roster Table
+    const stTbody = document.getElementById("students-tbody");
+    stTbody.innerHTML = (studentsData.students || []).map(s => `
+      <tr style="border-bottom:1px solid rgba(255,255,255,0.05);">
+        <td style="padding:12px 14px; font-weight:700; color:#fff;">${s.name}</td>
+        <td style="padding:12px 14px; color:#cbd5e1;">${s.study_level} (${s.stream || 'General'})</td>
+        <td style="padding:12px 14px; color:#38bdf8;">${s.current_course || 'Grade 10 Math'}</td>
+        <td style="padding:12px 14px; color:#cbd5e1;">${s.current_concept || 'Statistics Foundations'}</td>
+        <td style="padding:12px 14px;">
+          <strong style="color:${s.mastery_score >= 70 ? '#34d399' : (s.mastery_score < 40 ? '#f87171' : '#fbbf24')};">
+            ${Math.round(s.mastery_score)}%
+          </strong>
+        </td>
+        <td style="padding:12px 14px;">
+          <span class="badge ${s.ml_state === 'NEEDS_SUPPORT' ? 'badge-struggling' : (s.ml_state === 'IMPROVING' ? 'badge-mastered' : 'badge-practice')}">
+            ${s.ml_state.replace('_', ' ')}
+          </span>
+        </td>
+        <td style="padding:12px 14px; text-align:right;">
+          <button class="btn btn-secondary btn-sm" onclick="API.switchDemoUser('${s.name.split(' ')[0].toLowerCase()}').then(() => window.location.href='/dashboard')">
+            Inspect Learner
+          </button>
+        </td>
+      </tr>
+    `).join('');
+
+  } catch (err) {
+    console.error("Facilitator load error:", err);
+  }
+});
+
+function openActionModal(interventionId, studentName, conceptTitle) {
+  activeInterventionId = interventionId;
+  document.getElementById("modal-int-title").textContent = `Assign Intervention for ${studentName}`;
+  document.getElementById("modal-int-desc").textContent = `Selected Concept: ${conceptTitle}. Dispatching an intervention immediately modifies the student's central adaptive learning path.`;
+  document.getElementById("intervention-modal").classList.add("active");
+}
+
+async function executeInterventionAction() {
+  if (!activeInterventionId) return;
+  const actionType = document.getElementById("modal-action-select").value;
+  const notes = document.getElementById("modal-action-notes").value;
+
+  try {
+    showToast("Dispatching intervention action to student pathway...");
+    const res = await API.assignIntervention(activeInterventionId, actionType, notes);
+    showToast(res.message);
+    document.getElementById("intervention-modal").classList.remove("active");
+    setTimeout(() => window.location.reload(), 800);
+  } catch (err) {
+    showToast("Failed to assign intervention: " + err.message, "error");
+  }
+}
+</script>
+{% endblock %}
