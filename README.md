@@ -10,9 +10,9 @@
 
 | # | Member | Program & Year | GitHub Handle | Primary Role |
 |---|---|---|---|---|
-| 1 | `Tejas M` (Lead) | `BE 2ND YEAR` | `@<github-handle>` | `Backend, Routing Engine` |
-| 2 | `Jeevan Nag N` | `BE2ND YEAR` | `@<github-handle>` | `Frontend` |
-| 3 | `Yashas M` | `BE 2ND YEAR` | `@<github-handle>` | `GIS, AIML` |
+| 1 | `Tejas M` (Lead) | `BE 2ND YEAR` | `@<https://github.com/tejasm103>` | `Backend, Frontend Routing Engine` |
+| 2 | `Jeevan Nag N` | `BE2ND YEAR` | `@<https://github.com/jeevannag07-jpg>` | `Frontend` |
+| 3 | `Yashas M` | `BE 2ND YEAR` | `@<https://github.com/yashas0305-cell>` | `GIS, AIML` |
 | 4 | `Nikhil M` | `BE 2ND YEAR` | `@<github-handle>` | `Database, Testing` |
 
 ---
