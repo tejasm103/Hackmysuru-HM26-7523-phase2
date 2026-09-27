@@ -1,4 +1,33 @@
-# AdaptiveLearn AI
+## 1. Team Details
+
+| Field | Value |
+|---|---|
+| Team ID (from dashboard) | `HM26-7523` |
+| Team Name | `infinite looper` |
+| College(s) | `Maharaja Institution of Technology, Tandavapura.` |
+| Team Leader | `Tejas M` |
+| Repository | ` https://github.com/tejasm103/Hackmysuru-HM26-7523-phase2|
+
+| # | Member | Program & Year | GitHub Handle | Primary Role |
+|---|---|---|---|---|
+| 1 | `Tejas M` (Lead) | `BE 2ND YEAR` | `@<github-handle>` | `Backend, Routing Engine` |
+| 2 | `Jeevan Nag N` | `BE2ND YEAR` | `@<github-handle>` | `Frontend` |
+| 3 | `Yashas M` | `BE 2ND YEAR` | `@<github-handle>` | `GIS, AIML` |
+| 4 | `Nikhil M` | `BE 2ND YEAR` | `@<github-handle>` | `Database, Testing` |
+
+---
+
+## 2. What We Built (one-liner)
+
+**Sub-problem:** Adaptive Learning & Real-Time Intervention Platform
+
+**In one sentence:**  
+`Students learn at different speeds and have different interests, but traditional learning systems often give everyone the same content at the same pace. Facilitators also have no simple way to tell, in real time, which students are stuck and what kind of help each one actually needs.
+
+
+
+
+`# AdaptiveLearn AI
 
 > **“One platform. Shared knowledge. Personalized learning. Connected learners.”**
 
